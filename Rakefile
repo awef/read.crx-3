@@ -1,6 +1,8 @@
 task :default => [
   "bin",
 
+  "bin/manifest.json",
+
   "bin/lib/jquery",
   "bin/lib/jquery/jquery.min.js",
 
@@ -22,10 +24,6 @@ task :watch do
   sh "bundle exec guard --notify false"
 end
 
-task :server do
-  sh "ruby -run -e httpd bin -p 8080"
-end
-
 def haml(src, output)
   sh "bundle exec haml -q #{src} #{output}"
 end
@@ -39,6 +37,10 @@ end
 directory "bin"
 directory "bin/lib/angularjs"
 directory "bin/lib/jquery"
+
+file "bin/manifest.json" => "src/manifest.json" do |t|
+  cp t.prerequisites[0], t.name
+end
 
 file "bin/index.html" => "src/index.haml" do |t|
   haml(t.prerequisites[0], t.name)
