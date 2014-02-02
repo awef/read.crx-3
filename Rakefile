@@ -1,19 +1,6 @@
 task :default => [
-  "bin",
-
-  "bin/manifest.json",
-
-  "bin/lib/jquery",
-  "bin/lib/jquery/jquery.min.js",
-
-  "bin/lib/angularjs",
-  "bin/lib/angularjs/angular.min.js",
-  "bin/lib/angularjs/angular-route.min.js",
-
-  "bin/index.html",
-  "bin/style.css",
-  "bin/script.js",
-  "view:build"
+  "core:build",
+  "bin/manifest.json"
 ]
 
 task :clean do
@@ -34,47 +21,66 @@ rule %r{bin/.+\.js} => "%{^bin/lib/,lib/}X.js" do |t|
   cp t.prerequisites[0], t.name
 end
 
-directory "bin"
-directory "bin/lib/angularjs"
-directory "bin/lib/jquery"
-
 file "bin/manifest.json" => "src/manifest.json" do |t|
   cp t.prerequisites[0], t.name
 end
 
-file "bin/index.html" => "src/index.haml" do |t|
-  haml(t.prerequisites[0], t.name)
-end
+namespace :core do
+  task :build => [
+    "bin",
 
-file "bin/style.css" => FileList["src/style.scss", "src/components/*.scss"] do |t|
-  sh "bundle exec scss --style compressed src/style.scss #{t.name}"
-end
+    "bin/lib/jquery",
+    "bin/lib/jquery/jquery.min.js",
 
-file "bin/script.js" => FileList["src/**/*.ts"] do |t|
- sh "node_modules/.bin/tsc --target ES5 --out #{t.name} src/script.ts"
-end
+    "bin/lib/angularjs",
+    "bin/lib/angularjs/angular.min.js",
+    "bin/lib/angularjs/angular-route.min.js",
 
-namespace :view do
-  files = ["debug/view"]
+    "bin/index.html",
+    "bin/style.css",
+    "bin/script.js",
 
-  directory "debug/view"
+    "view:build"
+  ]
 
-  FileList["src/view/*.haml"].each do |haml_path|
-    html_path = haml_path
-      .gsub("src/view/", "bin/view/")
-      .gsub(".haml", ".html")
+  directory "bin"
+  directory "bin/lib/angularjs"
+  directory "bin/lib/jquery"
 
-    directory_path = html_path.gsub(%r"/[^/]+$", "")
-    directory directory_path
-    files.push(directory_path)
-
-    file html_path => haml_path do |t|
-      haml(t.prerequisites[0], t.name)
-    end
-    files.push(html_path)
+  file "bin/index.html" => "src/index.haml" do |t|
+    haml(t.prerequisites[0], t.name)
   end
 
-  task :build => files
+  file "bin/style.css" => FileList["src/style.scss", "src/components/*.scss"] do |t|
+    sh "bundle exec scss --style compressed src/style.scss #{t.name}"
+  end
+
+  file "bin/script.js" => FileList["src/**/*.ts"] do |t|
+   sh "node_modules/.bin/tsc --target ES5 --out #{t.name} src/script.ts"
+  end
+
+  namespace :view do
+    files = ["debug/view"]
+
+    directory "debug/view"
+
+    FileList["src/view/*.haml"].each do |haml_path|
+      html_path = haml_path
+        .gsub("src/view/", "bin/view/")
+        .gsub(".haml", ".html")
+
+      directory_path = html_path.gsub(%r"/[^/]+$", "")
+      directory directory_path
+      files.push(directory_path)
+
+      file html_path => haml_path do |t|
+        haml(t.prerequisites[0], t.name)
+      end
+      files.push(html_path)
+    end
+
+    task :build => files
+  end
 end
 
 namespace :test do
