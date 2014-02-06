@@ -51,7 +51,7 @@ namespace :core do
     haml(t.prerequisites[0], t.name)
   end
 
-  file "bin/style.css" => FileList["src/style.scss", "src/components/*.scss"] do |t|
+  file "bin/style.css" => FileList["src/style.scss", "src/**/*.scss"] do |t|
     sh "bundle exec scss --style compressed src/style.scss #{t.name}"
   end
 
