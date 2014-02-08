@@ -83,6 +83,16 @@ namespace :core do
   end
 end
 
+namespace :lib do
+  task :dl_angular, :version do |t, args|
+    files = ["angular", "angular-route"]
+
+    files.each do |filename|
+      sh "wget -O lib/angularjs/#{filename}.min.js https://ajax.googleapis.com/ajax/libs/angularjs/#{args[:version]}/#{filename}.min.js"
+    end
+  end
+end
+
 namespace :lint do
   task :run do
     sh "node_modules/.bin/jshint bin/script.js"
