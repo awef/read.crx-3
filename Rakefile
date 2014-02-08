@@ -83,6 +83,12 @@ namespace :core do
   end
 end
 
+namespace :lint do
+  task :run do
+    sh "node_modules/.bin/jshint bin/script.js"
+  end
+end
+
 namespace :test do
   task :start do
     sh "node_modules/.bin/karma start"
