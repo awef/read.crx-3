@@ -6,7 +6,7 @@ GEM
     coderay (1.1.0)
     ffi (1.9.3)
     formatador (0.2.4)
-    guard (2.3.0)
+    guard (2.4.0)
       formatador (>= 0.2.4)
       listen (~> 2.1)
       lumberjack (~> 1.0)
@@ -17,7 +17,7 @@ GEM
       rake
     haml (4.0.5)
       tilt
-    listen (2.4.0)
+    listen (2.4.1)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
