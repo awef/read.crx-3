@@ -1,5 +1,8 @@
 task :default => [
   "core:build",
+  "lint:run",
+  "test:run",
+
   "bin/manifest.json"
 ]
 
