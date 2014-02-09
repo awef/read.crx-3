@@ -5,7 +5,6 @@ module.exports = function(config) {
     files: [
       "lib/jquery/jquery.min.js",
       "lib/angularjs/angular.min.js",
-      "lib/angularjs/angular-mocks.js",
       "bin/script.js",
       "spec/**/*.coffee"
     ],
