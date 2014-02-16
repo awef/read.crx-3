@@ -45,3 +45,97 @@ describe "App.BBSIndex", ->
     return
   return
 
+describe "bbsIndexService", ->
+  "use strict"
+
+  beforeEach ->
+    module "BBSIndex"
+
+    inject ($httpBackend, bbsIndexService) =>
+      @$httpBackend = $httpBackend
+      @bbsIndexService = bbsIndexService
+      return
+    return
+
+  afterEach ->
+    @$httpBackend.verifyNoOutstandingExpectation()
+    @$httpBackend.verifyNoOutstandingRequest()
+    return
+
+  describe ".get", ->
+    describe "bbsmenu.htmlの取得に成功した場合", ->
+      describe "取得した内容のパースに成功した場合", ->
+        beforeEach ->
+          @$httpBackend
+            .when("GET", "http://menu.2ch.net/bbsmenu.html")
+              .respond(200, @dummyData.bbsMenuHtml)
+          return
+
+        it "promiseにパース結果を渡してresolveする", ->
+          successSpy = jasmine.createSpy("successSpy")
+
+          @bbsIndexService.get().then(successSpy)
+
+          expect(successSpy).not.toHaveBeenCalled()
+
+          @$httpBackend.flush()
+
+          waitsFor ->
+            successSpy.wasCalled
+
+          runs =>
+            expect(successSpy).toHaveBeenCalledWith(@dummyData.bbsIndex)
+            return
+          return
+        return
+
+      describe "取得した内容のパースに失敗した場合", ->
+        beforeEach ->
+          @$httpBackend
+            .when("GET", "http://menu.2ch.net/bbsmenu.html")
+              .respond(200, "dummy")
+          return
+
+        it "nullを渡してrejectする", ->
+          errorSpy = jasmine.createSpy("errorSpy")
+
+          @bbsIndexService.get().then((->), errorSpy)
+
+          expect(errorSpy).not.toHaveBeenCalled()
+
+          @$httpBackend.flush()
+
+          waitsFor ->
+            errorSpy.wasCalled
+
+          runs =>
+            expect(errorSpy).toHaveBeenCalledWith(null)
+            return
+          return
+        return
+
+    describe "通信に失敗した場合", ->
+      it "promiseにnullを渡してrejectする", ->
+        @$httpBackend
+          .when("GET", "http://menu.2ch.net/bbsmenu.html")
+            .respond(503, "dummy")
+
+        errorSpy = jasmine.createSpy("errorSpy")
+
+        @bbsIndexService.get().then((->), errorSpy)
+
+        expect(errorSpy).not.toHaveBeenCalled()
+
+        @$httpBackend.flush()
+
+        waitsFor ->
+          errorSpy.wasCalled
+
+        runs =>
+          expect(errorSpy).toHaveBeenCalledWith(null)
+          return
+        return
+      return
+    return
+  return
+

@@ -6,6 +6,7 @@ module.exports = function(config) {
       "lib/jquery/jquery.min.js",
       "lib/angularjs/angular.min.js",
       "bin/script.js",
+      "lib/angularjs/angular-mocks.js",
       "spec/**/*.coffee"
     ],
     reporters: ["progress"],

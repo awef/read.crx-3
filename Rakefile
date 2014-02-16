@@ -96,10 +96,10 @@ end
 
 namespace :lib do
   task :dl_angular, :version do |t, args|
-    files = ["angular", "angular-route"]
+    files = ["angular.min.js", "angular-route.min.js", "angular-mocks.js"]
 
     files.each do |filename|
-      sh "wget -O lib/angularjs/#{filename}.min.js https://ajax.googleapis.com/ajax/libs/angularjs/#{args[:version]}/#{filename}.min.js"
+      sh "wget -O lib/angularjs/#{filename} https://ajax.googleapis.com/ajax/libs/angularjs/#{args[:version]}/#{filename}"
     end
   end
 end

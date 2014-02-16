@@ -1,7 +1,7 @@
+///<reference path="../../lib/DefinitelyTyped/angularjs/angular.d.ts" />
+
 module App.BBSIndex {
   export interface Index {
-    lastUpdated: number;
-    lastModified: number;
     categories: Category[];
   }
 
@@ -16,6 +16,33 @@ module App.BBSIndex {
   }
 
   export class BBSIndexService {
+    $http: ng.IHttpService;
+    $q: ng.IQService;
+
+    constructor ($http, $q) {
+      this.$http = $http;
+      this.$q = $q;
+    }
+
+    get (): ng.IPromise<Index> {
+      var deferred: ng.IDeferred<Index>;
+
+      deferred = this.$q.defer();
+
+      this.$http({method: "GET", url: "http://menu.2ch.net/bbsmenu.html"})
+        .success(function (response) {
+          var parseResult: Index;
+
+          parseResult = BBSIndexService.parse(response);
+          deferred[parseResult ? "resolve" : "reject"](parseResult);
+        })
+        .error(function () {
+          deferred.reject(null);
+        });
+
+      return deferred.promise;
+    }
+
     static parse (html: string): Index {
       var index: Index,
         regCategory: RegExp,
@@ -25,8 +52,6 @@ module App.BBSIndex {
         category: Category;
 
       index = {
-        lastUpdated: 0,
-        lastModified: 0,
         categories: []
       };
 
@@ -54,5 +79,11 @@ module App.BBSIndex {
       return index.categories.length > 0 ? index : null;
     }
   }
+
+  angular
+    .module("BBSIndex", [])
+      .factory("bbsIndexService", function ($http, $q) {
+        return new BBSIndexService($http, $q);
+      });
 }
 

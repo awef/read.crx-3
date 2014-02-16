@@ -1,6 +1,6 @@
 beforeEach ->
   @dummyData ?= {}
-  
+
   @dummyData.bbsMenuHtml = """
 <HTML>
 <HEAD>
@@ -107,5 +107,98 @@ src="http://count.2ch.net/ct.php/bbsmenu/"
 border=0></A>
 </BODY></HTML>
   """
-  return
 
+  @dummyData.bbsIndex =
+    categories: [
+      {
+        name: "地震",
+        boards: [
+          {
+            name: "地震headline",
+            url: "http://headline.2ch.net/bbynamazu/"
+          },
+          {
+            name: "地震速報",
+            url: "http://anago.2ch.net/namazuplus/"
+          },
+          {
+            name: "臨時地震",
+            url: "http://hayabusa.2ch.net/eq/"
+          },
+          {
+            name: "臨時地震+",
+            url: "http://hayabusa2.2ch.net/eqplus/"
+          },
+          {
+            name: "緊急自然災害",
+            url: "http://uni.2ch.net/lifeline/"
+          }
+        ]
+      },
+      {
+        name: "おすすめ",
+        boards: [
+          {
+            name: "プロ野球",
+            url: "http://uni.2ch.net/base/"
+          },
+          {
+            name: "家電製品",
+            url: "http://awabi.2ch.net/kaden/"
+          },
+          {
+            name: "写真撮影",
+            url: "http://ikura.2ch.net/photo/"
+          },
+          {
+            name: "神社・仏閣",
+            url: "http://ikura.2ch.net/kyoto/"
+          },
+          {
+            name: "きのこ",
+            url: "http://uni.2ch.net/kinoko/"
+          }
+        ]
+      },
+      {
+        name: "特別企画",
+        boards: [
+          {
+            name: "テレビ番組欄",
+            url: "http://epg.2ch.net/tv2chwiki/"
+          }
+        ]
+      },
+      {
+        name: "be",
+        boards: [
+          {
+            name: "面白ネタnews",
+            url: "http://kohada.2ch.net/be/"
+          },
+          {
+            name: "なんでも質問",
+            url: "http://ikura.2ch.net/nandemo/"
+          },
+          {
+            name: "朝生",
+            url: "http://ikura.2ch.net/argue/"
+          }
+        ]
+      },
+      {
+        name: "まちＢＢＳ",
+        boards: [
+          {
+            name: "会議室",
+            url: "http://www.machi.to/tawara/"
+          },
+          {
+            name: "北海道",
+            url: "http://hokkaido.machi.to/hokkaidou/"
+          }
+        ]
+      }
+    ]
+
+  return
