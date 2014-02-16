@@ -2,4 +2,10 @@
   %h1 view/dev
   .message {{message}}
   %button(data-ng-click="getBBSMenu()") BBSMenu取得テスト
+  %ul
+    %li(data-ng-repeat="category in bbsIndex.categories")
+      {{category.name}}
+      %ul
+        %li(data-ng-repeat="board in category.boards")
+          %a(href="{{board.url}}" target="_blank") {{board.name}}
 

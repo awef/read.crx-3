@@ -4,6 +4,7 @@
 
 interface DevCtrlScope {
   message: string;
+  bbsIndex: App.BBSIndex.Index;
   getBBSMenu: Function;
 }
 
@@ -11,10 +12,13 @@ class DevCtrl {
   constructor ($scope: DevCtrlScope, bbsIndexService: App.BBSIndex.BBSIndexService) {
     $scope.message = "Hello World";
 
+    $scope.bbsIndex = null;
+
     $scope.getBBSMenu = function () {
       bbsIndexService.get().then(
-        function () {
+        function (index) {
           console.log("getBBSMenu success", arguments);
+          $scope.bbsIndex = index;
         },
         function () {
           console.log("getBBSMenu error", arguments);
