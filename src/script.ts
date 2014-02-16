@@ -4,7 +4,7 @@
 ///<reference path="controller/dev.ts" />
 
 angular
-  .module("app", ["ngRoute"])
+  .module("app", ["ngRoute", "BBSIndex"])
     .config([
       "$routeProvider",
       function ($routeProvider) {
