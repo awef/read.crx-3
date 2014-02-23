@@ -46,7 +46,7 @@ module App.Cache {
       };
     }
 
-    set (entry: CacheEntry, callback?: Function) {
+    set (entry: CacheEntry, callback?: Function): void {
       var tra: IDBTransaction;
 
       if (this.db instanceof IDBDatabase) {
@@ -62,7 +62,7 @@ module App.Cache {
       }
     }
 
-    get (key: string, callback: Function) {
+    get (key: string, callback: Function): void {
       var req: IDBRequest;
 
       if (this.db instanceof IDBDatabase) {
