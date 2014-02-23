@@ -53,7 +53,7 @@ describe "bbsIndexService", ->
 
     inject ($httpBackend, bbsIndexService) =>
       @$httpBackend = $httpBackend
-      @bbsIndexService = bbsIndexService
+      @bbsIndexService = angular.copy(bbsIndexService)
       return
     return
 
