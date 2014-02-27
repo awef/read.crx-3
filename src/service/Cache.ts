@@ -49,7 +49,7 @@ module App.Cache {
     set (entry: CacheEntry, callback?: Function): void {
       var tra: IDBTransaction;
 
-      if (this.db instanceof IDBDatabase) {
+      if (this.db instanceof (<any>window).IDBDatabase) {
         tra = this.db.transaction("cache", "readwrite");
         tra.objectStore("cache").put(entry);
         tra.oncomplete = () => { if (callback) { callback(true); } };
@@ -65,7 +65,7 @@ module App.Cache {
     get (key: string, callback: Function): void {
       var req: IDBRequest;
 
-      if (this.db instanceof IDBDatabase) {
+      if (this.db instanceof (<any>window).IDBDatabase) {
         req = this.db.transaction("cache").objectStore("cache").get(key);
         req.onerror = function () {
           callback(null);
@@ -82,14 +82,14 @@ module App.Cache {
     removeOlderThan(date: number, callback?: Function): void {
       var tra: IDBTransaction, index: IDBIndex, cacheStore: IDBObjectStore;
 
-      if (this.db instanceof IDBDatabase) {
+      if (this.db instanceof (<any>window).IDBDatabase) {
         tra = this.db.transaction("cache", "readwrite");
         tra.onerror = () => { if (callback) { callback(false); } };
         tra.oncomplete = () => { if (callback) { callback(true); } };
 
         cacheStore = tra.objectStore("cache")
         index = cacheStore.index("lastUsed");
-        index.openKeyCursor((<any>IDBKeyRange).upperBound(date, true), "next").onsuccess = function () {
+        index.openKeyCursor((<any>window).IDBKeyRange.upperBound(date, true), "next").onsuccess = function () {
           var cursor: IDBCursor;
 
           if (cursor = this.result) {
