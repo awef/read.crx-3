@@ -78,6 +78,30 @@ module App.Cache {
         callback(null);
       }
     }
+
+    removeOlderThan(date: number, callback?: Function): void {
+      var tra: IDBTransaction, index: IDBIndex, cacheStore: IDBObjectStore;
+
+      if (this.db instanceof IDBDatabase) {
+        tra = this.db.transaction("cache", "readwrite");
+        tra.onerror = () => { if (callback) { callback(false); } };
+        tra.oncomplete = () => { if (callback) { callback(true); } };
+
+        cacheStore = tra.objectStore("cache")
+        index = cacheStore.index("lastUsed");
+        index.openKeyCursor((<any>IDBKeyRange).upperBound(date, true), "next").onsuccess = function () {
+          var cursor: IDBCursor;
+
+          if (cursor = this.result) {
+            cacheStore.delete(cursor.primaryKey)
+            cursor.continue();
+          }
+        };
+      }
+      else {
+        callback(false);
+      }
+    }
   }
 }
 

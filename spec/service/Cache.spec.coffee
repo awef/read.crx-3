@@ -1,6 +1,19 @@
 describe "App.CacheService", ->
   "use strict"
 
+  generateDummyCache = do ->
+    testId = Date.now()
+    seed = 0
+
+    ->
+      seed++
+
+      key: "generated_for_test_uid#{testId}:#{seed}"
+      text: "text #{testId}:#{seed}"
+      lastModified: Date.now()
+      lastUpdated: Date.now()
+      lastUsed: Date.now()
+
   beforeEach ->
     @cacheService = new App.Cache.CacheService()
 
@@ -10,6 +23,7 @@ describe "App.CacheService", ->
       lastModified: 0
       lastUpdated: 0
       lastUsed: 0
+
     return
 
   describe ".prototype.openDB", ->
@@ -114,6 +128,90 @@ describe "App.CacheService", ->
           runs ->
             expect(callback).toHaveBeenCalledWith(null)
             return
+          return
+        return
+      return
+    return
+
+  describe ".prototype.removeOlderThan", ->
+    describe ".dbがnullの状態で実行された場合", ->
+      it "何もしない", ->
+        callback = jasmine.createSpy()
+
+        @cacheService.removeOlderThan(Date.now(), callback)
+
+        expect(callback).toHaveBeenCalledWith(false)
+        return
+      return
+
+    describe ".dbにIDBDatabaseが代入されている場合", ->
+      beforeEach ->
+        callback = jasmine.createSpy()
+
+        @cacheService.openDB("testCacheDB", callback)
+
+        waitsFor -> callback.wasCalled
+        return
+
+      it "指定された時刻よりもlastUsedが古いエントリを全て削除する", ->
+        cacheA = generateDummyCache()
+        cacheB = null
+        cacheC = null
+
+        setTimeout((-> cacheB = generateDummyCache()), 50)
+        setTimeout((-> cacheC = generateDummyCache()), 100)
+
+        waitsFor ->
+          cacheC
+
+        setCallbacks = []
+
+        runs =>
+          setCallbacks.push(setCallbackA = jasmine.createSpy("setCallbackA"))
+          @cacheService.set(cacheA, setCallbackA)
+
+          setCallbacks.push(setCallbackB = jasmine.createSpy("setCallbackB"))
+          @cacheService.set(cacheB, setCallbackB)
+
+          setCallbacks.push(setCallbackC = jasmine.createSpy("setCallbackC"))
+          @cacheService.set(cacheC, setCallbackC)
+          return
+
+        waitsFor ->
+          setCallbacks.every((callback) -> callback.wasCalled)
+
+        rotCallback = jasmine.createSpy("rotCallback")
+
+        runs ->
+          @cacheService.removeOlderThan(cacheB.lastUsed + 10, rotCallback)
+          return
+
+        waitsFor ->
+          rotCallback.wasCalled
+
+        runs ->
+          expect(rotCallback).toHaveBeenCalledWith(true)
+
+        getCallbacks = []
+
+        runs ->
+          getCallbacks.push(getCallbackA = jasmine.createSpy("getCallbackA"))
+          @cacheService.get(cacheA.key, getCallbackA)
+
+          getCallbacks.push(getCallbackB = jasmine.createSpy("getCallbackB"))
+          @cacheService.get(cacheB.key, getCallbackB)
+
+          getCallbacks.push(getCallbackC = jasmine.createSpy("getCallbackC"))
+          @cacheService.get(cacheC.key, getCallbackC)
+          return
+
+        waitsFor ->
+          getCallbacks.every((callback) -> callback.wasCalled)
+
+        runs ->
+          expect(getCallbacks[0]).toHaveBeenCalledWith(null)
+          expect(getCallbacks[1]).toHaveBeenCalledWith(null)
+          expect(getCallbacks[2]).toHaveBeenCalledWith(cacheC)
           return
         return
       return
