@@ -35,10 +35,6 @@ module App.Cache {
         db = req.result;
         objectStore = db.createObjectStore("cache", {keyPath: "key"});
         objectStore.createIndex("lastUsed", "lastUsed");
-        objectStore.transaction.oncomplete = () => {
-          this.db = db;
-          callback();
-        };
       };
       req.onsuccess = () => {
         this.db = req.result;

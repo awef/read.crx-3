@@ -35,6 +35,7 @@ describe "App.CacheService", ->
       waitsFor -> callback.wasCalled
 
       runs ->
+        expect(callback.callCount).toBe(1)
         expect(@cacheService.db instanceof IDBDatabase).toBeTruthy()
         return
       return
