@@ -1,7 +1,6 @@
 task :default => [
   "core:build",
   "core:lint",
-  "core:test",
 
   "bin/manifest.json"
 ]
@@ -50,10 +49,6 @@ namespace :core do
     sh "node_modules/.bin/jshint bin/script.js"
   end
 
-  task :test do
-    sh "node_modules/.bin/karma start --single-run"
-  end
-
   directory "bin"
   directory "bin/lib/angularjs"
   directory "bin/lib/jquery"
@@ -91,6 +86,16 @@ namespace :core do
     end
 
     task :build => files
+  end
+
+  namespace :test do
+    task :run do
+      sh "node_modules/.bin/karma start --single-run"
+    end
+
+    task :start do
+      sh "node_modules/.bin/karma start"
+    end
   end
 end
 
