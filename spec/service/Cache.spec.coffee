@@ -5,19 +5,20 @@ describe "App.CacheService", ->
     testId = Date.now()
     seed = 0
 
-    ->
+    (date = Date.now()) ->
       seed++
 
       key: "generated_for_test_uid#{testId}:#{seed}"
       text: "text #{testId}:#{seed}"
-      lastModified: Date.now()
-      lastUpdated: Date.now()
-      lastUsed: Date.now()
+      lastModified: date
+      lastUpdated: date
+      lastUsed: date
 
   beforeEach ->
     module "Cache"
 
     inject ($rootScope, $q) =>
+      @$q = $q
       @cacheService = new App.Cache.CacheService($rootScope, $q)
       return
 
@@ -156,60 +157,34 @@ describe "App.CacheService", ->
 
       it "指定された時刻よりもlastUsedが古いエントリを全て削除する", ->
         cacheA = generateDummyCache()
-        cacheB = null
-        cacheC = null
+        cacheB = generateDummyCache(Date.now() + 50)
+        cacheC = generateDummyCache(Date.now() + 100)
 
-        setTimeout((-> cacheB = generateDummyCache()), 50)
-        setTimeout((-> cacheC = generateDummyCache()), 100)
-
-        waitsFor ->
-          cacheC
-
-        setCallbacks = []
+        getCallback = jasmine.createSpy("getCallback")
 
         runs =>
-          setCallbacks.push(setCallbackA = jasmine.createSpy("setCallbackA"))
-          @cacheService.set(cacheA).then(setCallbackA)
-
-          setCallbacks.push(setCallbackB = jasmine.createSpy("setCallbackB"))
-          @cacheService.set(cacheB).then(setCallbackB)
-
-          setCallbacks.push(setCallbackC = jasmine.createSpy("setCallbackC"))
-          @cacheService.set(cacheC).then(setCallbackC)
+          @$q
+            .all([
+              @cacheService.set(cacheA)
+              @cacheService.set(cacheB)
+              @cacheService.set(cacheC)
+            ])
+            .then () =>
+              @cacheService.removeOlderThan(cacheB.lastUsed + 10)
+            .then () =>
+              @$q.all([
+                @cacheService.get(cacheA.key)
+                @cacheService.get(cacheB.key)
+                @cacheService.get(cacheC.key)
+              ])
+            .then(getCallback)
           return
 
         waitsFor ->
-          setCallbacks.every((callback) -> callback.wasCalled)
-
-        rotCallback = jasmine.createSpy("rotCallback")
+          getCallback.wasCalled
 
         runs ->
-          @cacheService.removeOlderThan(cacheB.lastUsed + 10).then(rotCallback)
-          return
-
-        waitsFor ->
-          rotCallback.wasCalled
-
-        getCallbacks = []
-
-        runs ->
-          getCallbacks.push(getCallbackA = jasmine.createSpy("getCallbackA"))
-          @cacheService.get(cacheA.key).then(getCallbackA)
-
-          getCallbacks.push(getCallbackB = jasmine.createSpy("getCallbackB"))
-          @cacheService.get(cacheB.key).then(getCallbackB)
-
-          getCallbacks.push(getCallbackC = jasmine.createSpy("getCallbackC"))
-          @cacheService.get(cacheC.key).then(getCallbackC)
-          return
-
-        waitsFor ->
-          getCallbacks.every((callback) -> callback.wasCalled)
-
-        runs ->
-          expect(getCallbacks[0]).toHaveBeenCalledWith(null)
-          expect(getCallbacks[1]).toHaveBeenCalledWith(null)
-          expect(getCallbacks[2]).toHaveBeenCalledWith(cacheC)
+          expect(getCallback).toHaveBeenCalledWith([null, null, cacheC])
           return
         return
       return
