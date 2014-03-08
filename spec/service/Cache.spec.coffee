@@ -15,7 +15,11 @@ describe "App.CacheService", ->
       lastUsed: Date.now()
 
   beforeEach ->
-    @cacheService = new App.Cache.CacheService()
+    module "Cache"
+
+    inject ($rootScope, $q) =>
+      @cacheService = new App.Cache.CacheService($rootScope, $q)
+      return
 
     @dummyCache =
       key: "http://menu.2ch.net/bbsmenu.html"
@@ -27,10 +31,10 @@ describe "App.CacheService", ->
     return
 
   describe ".prototype.openDB", ->
-    it "DBを.dbに代入し、コールバックを呼ぶ", ->
+    it "DBを.dbに代入し、promiseをresolveする", ->
       callback = jasmine.createSpy()
 
-      @cacheService.openDB("testCacheDB", callback)
+      @cacheService.openDB("testCacheDB").then(callback)
 
       waitsFor -> callback.wasCalled
 
@@ -46,9 +50,9 @@ describe "App.CacheService", ->
       it "何もしない", ->
         callback = jasmine.createSpy()
 
-        @cacheService.set(@dummyCache, callback)
+        @cacheService.set(@dummyCache).then(null, callback)
 
-        expect(callback).toHaveBeenCalledWith(false)
+        waitsFor -> callback.wasCalled
         return
       return
 
@@ -56,7 +60,7 @@ describe "App.CacheService", ->
       beforeEach ->
         callback = jasmine.createSpy()
 
-        @cacheService.openDB("testCacheDB", callback)
+        @cacheService.openDB("testCacheDB").then(callback)
 
         waitsFor -> callback.wasCalled
         return
@@ -64,13 +68,9 @@ describe "App.CacheService", ->
       it "与えられたキャッシュをDBに格納する", ->
         callback = jasmine.createSpy()
 
-        @cacheService.set(@dummyCache, callback)
+        @cacheService.set(@dummyCache).then(callback)
 
         waitsFor -> callback.wasCalled
-
-        runs ->
-          expect(callback).toHaveBeenCalledWith(true)
-          return
         return
       return
     return
@@ -80,9 +80,9 @@ describe "App.CacheService", ->
       it "何もしない", ->
         callback = jasmine.createSpy()
 
-        @cacheService.get(@dummyCache.key, callback)
+        @cacheService.get(@dummyCache.key).then(null, callback)
 
-        expect(callback).toHaveBeenCalledWith(null)
+        waitsFor -> callback.wasCalled
         return
       return
 
@@ -91,14 +91,14 @@ describe "App.CacheService", ->
         openCallback = jasmine.createSpy()
         setCallback = jasmine.createSpy()
 
-        @cacheService.openDB("testCacheDB", openCallback)
+        @cacheService.openDB("testCacheDB").then(openCallback)
 
         waitsFor -> openCallback.wasCalled
 
         runs =>
           setCallback = jasmine.createSpy()
 
-          @cacheService.set(@dummyCache, setCallback)
+          @cacheService.set(@dummyCache).then(setCallback)
           return
 
         waitsFor -> setCallback.wasCalled
@@ -108,7 +108,7 @@ describe "App.CacheService", ->
         it "該当するキャッシュをコールバックに渡す", ->
           callback = jasmine.createSpy()
 
-          @cacheService.get(@dummyCache.key, callback)
+          @cacheService.get(@dummyCache.key).then(callback)
 
           waitsFor -> callback.wasCalled
 
@@ -122,7 +122,7 @@ describe "App.CacheService", ->
         it "コールバックにnullを渡す", ->
           callback = jasmine.createSpy()
 
-          @cacheService.get(@dummyCache.key + "_0", callback)
+          @cacheService.get(@dummyCache.key + "_0").then(callback)
 
           waitsFor -> callback.wasCalled
 
@@ -139,9 +139,9 @@ describe "App.CacheService", ->
       it "何もしない", ->
         callback = jasmine.createSpy()
 
-        @cacheService.removeOlderThan(Date.now(), callback)
+        @cacheService.removeOlderThan(Date.now()).then(null, callback)
 
-        expect(callback).toHaveBeenCalledWith(false)
+        waitsFor -> callback.wasCalled
         return
       return
 
@@ -149,7 +149,7 @@ describe "App.CacheService", ->
       beforeEach ->
         callback = jasmine.createSpy()
 
-        @cacheService.openDB("testCacheDB", callback)
+        @cacheService.openDB("testCacheDB").then(callback)
 
         waitsFor -> callback.wasCalled
         return
@@ -169,13 +169,13 @@ describe "App.CacheService", ->
 
         runs =>
           setCallbacks.push(setCallbackA = jasmine.createSpy("setCallbackA"))
-          @cacheService.set(cacheA, setCallbackA)
+          @cacheService.set(cacheA).then(setCallbackA)
 
           setCallbacks.push(setCallbackB = jasmine.createSpy("setCallbackB"))
-          @cacheService.set(cacheB, setCallbackB)
+          @cacheService.set(cacheB).then(setCallbackB)
 
           setCallbacks.push(setCallbackC = jasmine.createSpy("setCallbackC"))
-          @cacheService.set(cacheC, setCallbackC)
+          @cacheService.set(cacheC).then(setCallbackC)
           return
 
         waitsFor ->
@@ -184,26 +184,23 @@ describe "App.CacheService", ->
         rotCallback = jasmine.createSpy("rotCallback")
 
         runs ->
-          @cacheService.removeOlderThan(cacheB.lastUsed + 10, rotCallback)
+          @cacheService.removeOlderThan(cacheB.lastUsed + 10).then(rotCallback)
           return
 
         waitsFor ->
           rotCallback.wasCalled
 
-        runs ->
-          expect(rotCallback).toHaveBeenCalledWith(true)
-
         getCallbacks = []
 
         runs ->
           getCallbacks.push(getCallbackA = jasmine.createSpy("getCallbackA"))
-          @cacheService.get(cacheA.key, getCallbackA)
+          @cacheService.get(cacheA.key).then(getCallbackA)
 
           getCallbacks.push(getCallbackB = jasmine.createSpy("getCallbackB"))
-          @cacheService.get(cacheB.key, getCallbackB)
+          @cacheService.get(cacheB.key).then(getCallbackB)
 
           getCallbacks.push(getCallbackC = jasmine.createSpy("getCallbackC"))
-          @cacheService.get(cacheC.key, getCallbackC)
+          @cacheService.get(cacheC.key).then(getCallbackC)
           return
 
         waitsFor ->

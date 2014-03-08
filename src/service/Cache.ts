@@ -14,20 +14,25 @@ module App.Cache {
   }
 
   export class CacheService {
+    $rootScope: ng.IScope;
+    $q: ng.IQService;
     db: IDBDatabase;
 
-    constructor () {
+    constructor ($rootScope, $q) {
+      this.$rootScope = $rootScope;
+      this.$q = $q;
       this.db = null;
     }
 
-    openDB (dbKey: string, callback: Function): void {
-      var req: IDBOpenDBRequest;
+    openDB (dbKey: string): ng.IPromise<{}> {
+      var deferred: ng.IDeferred<{}>, req: IDBOpenDBRequest;
 
+      deferred = this.$q.defer();
       req = indexedDB.open(dbKey, 1);
 
       req.onerror = () => {
         this.db = null;
-        callback();
+        this.$rootScope.$apply(deferred.reject);
       };
       req.onupgradeneeded = () => {
         var db: IDBDatabase, objectStore: IDBObjectStore;
@@ -38,50 +43,79 @@ module App.Cache {
       };
       req.onsuccess = () => {
         this.db = req.result;
-        callback();
+        this.$rootScope.$apply(deferred.resolve);
       };
+
+      return deferred.promise;
     }
 
-    set (entry: CacheEntry, callback?: Function): void {
-      var tra: IDBTransaction;
+    set (entry: CacheEntry): ng.IPromise<{}> {
+      var deferred: ng.IDeferred<{}>, tra: IDBTransaction;
+
+      deferred = this.$q.defer();
 
       if (this.db instanceof (<any>window).IDBDatabase) {
         tra = this.db.transaction("cache", "readwrite");
         tra.objectStore("cache").put(entry);
-        tra.oncomplete = () => { if (callback) { callback(true); } };
-        tra.onerror = () => { if (callback) { callback(false); } };
+        tra.oncomplete = () => {
+          this.$rootScope.$apply(deferred.resolve);
+        };
+        tra.onerror = () => {
+          this.$rootScope.$apply(deferred.reject);
+        };
       }
       else {
-        if (callback) {
-          callback(false);
-        }
+        setTimeout(() => {
+          this.$rootScope.$apply(() => {
+            deferred.reject();
+          });
+        });
       }
+
+      return deferred.promise;
     }
 
-    get (key: string, callback: Function): void {
-      var req: IDBRequest;
+    get (key: string): ng.IPromise<CacheEntry> {
+      var deferred: ng.IDeferred<CacheEntry>, req: IDBRequest;
+
+      deferred = this.$q.defer();
 
       if (this.db instanceof (<any>window).IDBDatabase) {
         req = this.db.transaction("cache").objectStore("cache").get(key);
-        req.onerror = function () {
-          callback(null);
+        req.onerror = () => {
+          this.$rootScope.$apply(deferred.reject);
         };
-        req.onsuccess = function () {
-          callback(req.result || null);
+        req.onsuccess = () => {
+          this.$rootScope.$apply(() => {
+            deferred.resolve(req.result || null);
+          });
         };
       }
       else {
-        callback(null);
+        setTimeout(() => {
+          this.$rootScope.$apply(() => {
+            deferred.reject();
+          });
+        });
       }
+
+      return deferred.promise;
     }
 
-    removeOlderThan(date: number, callback?: Function): void {
-      var tra: IDBTransaction, index: IDBIndex, cacheStore: IDBObjectStore;
+    removeOlderThan(date: number): ng.IPromise<{}> {
+      var deferred: ng.IDeferred<{}>, tra: IDBTransaction, index: IDBIndex,
+        cacheStore: IDBObjectStore;
+
+      deferred = this.$q.defer();
 
       if (this.db instanceof (<any>window).IDBDatabase) {
         tra = this.db.transaction("cache", "readwrite");
-        tra.onerror = () => { if (callback) { callback(false); } };
-        tra.oncomplete = () => { if (callback) { callback(true); } };
+        tra.onerror = () => {
+          this.$rootScope.$apply(deferred.reject);
+        };
+        tra.oncomplete = () => {
+          this.$rootScope.$apply(deferred.resolve);
+        };
 
         cacheStore = tra.objectStore("cache")
         index = cacheStore.index("lastUsed");
@@ -95,9 +129,20 @@ module App.Cache {
         };
       }
       else {
-        callback(false);
+        setTimeout(() => {
+          this.$rootScope.$apply(() => {
+            deferred.reject();
+          });
+        });
       }
+
+      return deferred.promise;
     }
   }
+
+  angular.module("Cache", [])
+    .factory("cacheService", function ($rootScope, $q) {
+      return new CacheService($rootScope, $q);
+    });
 }
 
