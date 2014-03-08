@@ -1,5 +1,19 @@
-describe "App.BBSIndex", ->
+describe "App.BBSIndex.BBSIndexService", ->
   "use strict"
+
+  beforeEach ->
+    module "BBSIndex"
+
+    inject ($httpBackend, bbsIndexService) =>
+      @$httpBackend = $httpBackend
+      @bbsIndexService = angular.copy(bbsIndexService)
+      return
+    return
+
+  afterEach ->
+    @$httpBackend.verifyNoOutstandingExpectation()
+    @$httpBackend.verifyNoOutstandingRequest()
+    return
 
   describe ".parse", ->
     it "与えられたHTML文字列をパースし、BBS一覧のデータを返す", ->
@@ -42,24 +56,6 @@ describe "App.BBSIndex", ->
 
       expect(result).toBeNull()
       return
-    return
-  return
-
-describe "bbsIndexService", ->
-  "use strict"
-
-  beforeEach ->
-    module "BBSIndex"
-
-    inject ($httpBackend, bbsIndexService) =>
-      @$httpBackend = $httpBackend
-      @bbsIndexService = angular.copy(bbsIndexService)
-      return
-    return
-
-  afterEach ->
-    @$httpBackend.verifyNoOutstandingExpectation()
-    @$httpBackend.verifyNoOutstandingRequest()
     return
 
   describe ".get", ->
