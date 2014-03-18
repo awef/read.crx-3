@@ -87,16 +87,6 @@ namespace :core do
 
     task :build => files
   end
-
-  namespace :test do
-    task :run do
-      sh "node_modules/.bin/karma start --single-run"
-    end
-
-    task :start do
-      sh "node_modules/.bin/karma start"
-    end
-  end
 end
 
 namespace :lib do
@@ -106,6 +96,16 @@ namespace :lib do
     files.each do |filename|
       sh "wget -O lib/angularjs/#{filename} https://ajax.googleapis.com/ajax/libs/angularjs/#{args[:version]}/#{filename}"
     end
+  end
+end
+
+namespace :test do
+  task :run do
+    sh "node_modules/.bin/karma start --single-run"
+  end
+
+  task :watch do
+    sh "node_modules/.bin/karma start"
   end
 end
 
