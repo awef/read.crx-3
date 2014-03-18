@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.set({
-    basePath: "",
-    frameworks: ["jasmine"],
+    basePath: '',
+    frameworks: ['jasmine'],
     files: [
       "lib/jquery/jquery.min.js",
       "lib/angularjs/angular.min.js",
@@ -9,14 +9,15 @@ module.exports = function(config) {
       "lib/angularjs/angular-mocks.js",
       "spec/**/*.coffee"
     ],
-    reporters: ["progress"],
+    preprocessors: {
+      '**/*.coffee': ['coffee']
+    },
+    reporters: ['progress'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["Chrome", "Firefox"],
-    captureTimeout: 60000,
+    browsers: ['Chrome', 'Firefox'],
     singleRun: false
   });
 };
-
