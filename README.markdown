@@ -1,5 +1,7 @@
 # read.crx 3
 
+[![Dependency Status](https://gemnasium.com/awef/read.crx-3.svg)](https://gemnasium.com/awef/read.crx-3)
+
 ## 概要
 
 様々な面でread.crx 2より改善されたソフトウェアを作成する事が目的のプロジェクト。
