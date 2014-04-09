@@ -10,14 +10,15 @@ module.exports = function(config) {
       "spec/**/*.coffee"
     ],
     preprocessors: {
-      '**/*.coffee': ['coffee']
+      '**/*.coffee': ['coffee'],
+      "bin/script.js": ['coverage']
     },
     coffeePreprocessor: {
       options: {
         sourceMap: true
       }
     },
-    reporters: ['progress'],
+    reporters: ['coverage', 'progress'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
