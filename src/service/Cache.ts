@@ -1,4 +1,5 @@
 ///<reference path="../../lib/DefinitelyTyped/angularjs/angular.d.ts" />
+///<reference path="Env.ts" />
 
 module App.Cache {
   export interface CacheEntry {
@@ -140,9 +141,17 @@ module App.Cache {
     }
   }
 
-  angular.module("Cache", [])
-    .factory("cacheService", function ($rootScope, $q) {
-      return new CacheService($rootScope, $q);
+  angular.module("Cache", ["Env"])
+    .factory("cacheService", function (env, $rootScope, $q) {
+      var service: CacheService;
+
+      service = new CacheService($rootScope, $q)
+
+      if (!env.test) {
+        service.openDB("cache");
+      }
+
+      return service;
     });
 }
 
