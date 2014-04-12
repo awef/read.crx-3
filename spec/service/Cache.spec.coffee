@@ -28,27 +28,38 @@ describe "App.CacheService", ->
       lastModified: 0
       lastUpdated: 0
       lastUsed: 0
-
     return
 
   describe ".prototype.openDB", ->
-    it "DBを.dbに代入し、promiseをresolveする", ->
-      callback = jasmine.createSpy()
+    it "DBを開く処理のpromiseをgetDBに格納する", ->
+      openDBCallback = jasmine.createSpy()
+      getDBCallback = jasmine.createSpy()
 
-      @cacheService.openDB("testCacheDB").then(callback)
+      @cacheService.openDB("testCacheDB").then(openDBCallback)
+      @cacheService.getDB().then(getDBCallback)
 
-      waitsFor -> callback.wasCalled
+      waitsFor -> openDBCallback.wasCalled
 
       runs ->
-        expect(callback.callCount).toBe(1)
-        expect(@cacheService.db instanceof IDBDatabase).toBeTruthy()
+        expect(getDBCallback).toHaveBeenCalled()
         return
       return
     return
 
+  describe ".prototype.getDB", ->
+    describe "openDBが実行されていない状態の場合", ->
+      it "何もせずにrejectする", ->
+        callback = jasmine.createSpy()
+
+        @cacheService.getDB().then(null, callback)
+
+        waitsFor -> callback.wasCalled
+        return
+      return
+
   describe ".prototype.set", ->
-    describe ".dbがnullの状態で実行された場合", ->
-      it "何もしない", ->
+    describe "openDBが実行されていない状態で実行された場合", ->
+      it "何もせずにrejectする", ->
         callback = jasmine.createSpy()
 
         @cacheService.set(@dummyCache).then(null, callback)
@@ -57,13 +68,9 @@ describe "App.CacheService", ->
         return
       return
 
-    describe ".dbにIDBDatabaseが代入されている場合", ->
+    describe "openDBが実行されている場合", ->
       beforeEach ->
-        callback = jasmine.createSpy()
-
-        @cacheService.openDB("testCacheDB").then(callback)
-
-        waitsFor -> callback.wasCalled
+        @cacheService.openDB("testCacheDB")
         return
 
       it "与えられたキャッシュをDBに格納する", ->
@@ -77,8 +84,8 @@ describe "App.CacheService", ->
     return
 
   describe ".prototype.get", ->
-    describe ".dbがnullの状態で実行された場合", ->
-      it "何もしない", ->
+    describe "openDBが実行されていない状態で実行された場合", ->
+      it "何もせずにrejectする", ->
         callback = jasmine.createSpy()
 
         @cacheService.get(@dummyCache.key).then(null, callback)
@@ -87,20 +94,12 @@ describe "App.CacheService", ->
         return
       return
 
-    describe ".dbにIDBDatabaseが代入されている場合", ->
+    describe "openDBが実行されている場合", ->
       beforeEach ->
-        openCallback = jasmine.createSpy()
         setCallback = jasmine.createSpy()
 
-        @cacheService.openDB("testCacheDB").then(openCallback)
-
-        waitsFor -> openCallback.wasCalled
-
-        runs =>
-          setCallback = jasmine.createSpy()
-
-          @cacheService.set(@dummyCache).then(setCallback)
-          return
+        @cacheService.openDB("testCacheDB")
+        @cacheService.set(@dummyCache).then(setCallback)
 
         waitsFor -> setCallback.wasCalled
         return
@@ -136,7 +135,7 @@ describe "App.CacheService", ->
     return
 
   describe ".prototype.removeOlderThan", ->
-    describe ".dbがnullの状態で実行された場合", ->
+    describe "openDBが実行されていない状態で実行された場合", ->
       it "何もしない", ->
         callback = jasmine.createSpy()
 
@@ -146,7 +145,7 @@ describe "App.CacheService", ->
         return
       return
 
-    describe ".dbにIDBDatabaseが代入されている場合", ->
+    describe "openDBが実行されている場合", ->
       beforeEach ->
         callback = jasmine.createSpy()
 
