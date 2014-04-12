@@ -1,4 +1,5 @@
 ///<reference path="../../lib/DefinitelyTyped/angularjs/angular.d.ts" />
+///<reference path="CachedHTTP.ts" />
 
 module App.BBSIndex {
   export interface Index {
@@ -16,11 +17,11 @@ module App.BBSIndex {
   }
 
   export class BBSIndexService {
-    $http: ng.IHttpService;
+    cachedHTTP: App.CachedHTTP.CachedHTTP;
     $q: ng.IQService;
 
-    constructor ($http, $q) {
-      this.$http = $http;
+    constructor (cachedHTTP, $q) {
+      this.cachedHTTP = cachedHTTP;
       this.$q = $q;
     }
 
@@ -29,16 +30,18 @@ module App.BBSIndex {
 
       deferred = this.$q.defer();
 
-      this.$http({method: "GET", url: "http://menu.2ch.net/bbsmenu.html"})
-        .success(function (response) {
-          var parseResult: Index;
+      this.cachedHTTP.get("http://menu.2ch.net/bbsmenu.html", 1000 * 60 * 60)
+        .then(
+          function (response) {
+            var parseResult: Index;
 
-          parseResult = BBSIndexService.parse(response);
-          deferred[parseResult ? "resolve" : "reject"](parseResult);
-        })
-        .error(function () {
-          deferred.reject(null);
-        });
+            parseResult = BBSIndexService.parse(response);
+            deferred[parseResult ? "resolve" : "reject"](parseResult);
+          },
+          function () {
+            deferred.reject(null);
+          }
+        );
 
       return deferred.promise;
     }
@@ -81,9 +84,9 @@ module App.BBSIndex {
   }
 
   angular
-    .module("BBSIndex", [])
-      .factory("bbsIndexService", function ($http, $q) {
-        return new BBSIndexService($http, $q);
+    .module("BBSIndex", ['CachedHTTP'])
+      .factory("bbsIndexService", function (cachedHTTP, $q) {
+        return new BBSIndexService(cachedHTTP, $q);
       });
 }
 
