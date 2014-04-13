@@ -2,7 +2,7 @@
 ///<reference path="../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="service/BBSIndex.ts" />
 ///<reference path="service/Cache.ts" />
-///<reference path="controller/dev.ts" />
+///<reference path="controller/index.ts" />
 
 angular
   .module("app", ["ngRoute", "BBSIndex"])
@@ -10,8 +10,8 @@ angular
       "$routeProvider",
       function ($routeProvider) {
         $routeProvider
-          .when("/dev", {
-            templateUrl: "view/dev.html"
+          .when("/", {
+            templateUrl: "view/index.html"
           });
       }
     ]);

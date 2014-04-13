@@ -1,7 +1,6 @@
-.dev(data-ng-controller="DevCtrl")
-  %h1 view/dev
+.index(data-ng-controller="IndexCtrl")
+  %h1 view/index
   .message {{message}}
-  %button(data-ng-click="getBBSMenu()") BBSMenu取得テスト
   %ul
     %li(data-ng-repeat="category in bbsIndex.categories")
       {{category.name}}
