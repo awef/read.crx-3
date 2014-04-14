@@ -2,6 +2,9 @@
 ///<reference path="../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="controller/index.ts" />
 
+// テスト用
+///<reference path="service/Adapter/ChLikeBBS.ts" />
+
 angular
   .module("app", ["ngRoute", "BBSIndex"])
     .config([
