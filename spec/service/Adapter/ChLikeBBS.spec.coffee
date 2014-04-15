@@ -1,4 +1,4 @@
-describe "adapter/chLikeBBS", ->
+describe "chLikeBBSAdapter", ->
   "use strict"
 
   beforeEach ->
