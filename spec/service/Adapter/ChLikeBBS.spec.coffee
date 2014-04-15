@@ -39,4 +39,55 @@ describe "adapter/chLikeBBS", ->
       expect(@chLikeBBSAdapter.isSupported("http://www.machi.to/bbs/read.cgi/tawara/1234567890/")).toBe("no")
       return
     return
+
+  describe ".parseSubjectTxt", ->
+    it "subject.txtをパースする", ->
+      url = "http://qb5.2ch.net/operate/"
+      text = """
+        1301664644.dat<>【粛々と】シークレット★忍法帖巻物 8【情報収集、集約スレ】 (174)
+        1301751706.dat<>【news】ニュース速報運用情報759【ν】 (221)
+        1301761019.dat<>[test] 書き込みテスト 専用スレッド 240 [ﾃｽﾄ] (401)
+        1295975106.dat<>重い重い重い重い重い重い重い×70＠運用情報 (668)
+        1294363063.dat<>【お止め組。】出動予定＆連絡 詰所◆13 (312)
+      """
+      expected = {
+        url: "http://qb5.2ch.net/operate/"
+        title: "http://qb5.2ch.net/operate/"
+        data: [
+          {
+            url: "http://qb5.2ch.net/test/read.cgi/operate/1301664644/"
+            title: "【粛々と】シークレット★忍法帖巻物 8【情報収集、集約スレ】"
+            resCount: 174
+            date: 1301664644000
+          }
+          {
+            url: "http://qb5.2ch.net/test/read.cgi/operate/1301751706/"
+            title: "【news】ニュース速報運用情報759【ν】"
+            resCount: 221
+            date: 1301751706000
+          }
+          {
+            url: "http://qb5.2ch.net/test/read.cgi/operate/1301761019/"
+            title: "[test] 書き込みテスト 専用スレッド 240 [ﾃｽﾄ]"
+            resCount: 401
+            date: 1301761019000
+          }
+          {
+            url: "http://qb5.2ch.net/test/read.cgi/operate/1295975106/"
+            title: "重い重い重い重い重い重い重い×70＠運用情報"
+            resCount: 668
+            date: 1295975106000
+          }
+          {
+            url: "http://qb5.2ch.net/test/read.cgi/operate/1294363063/"
+            title: "【お止め組。】出動予定＆連絡 詰所◆13"
+            resCount: 312,
+            date: 1294363063000
+          }
+        ]
+      }
+
+      expect(@chLikeBBSAdapter.parseSubjectTxt(url, text)).toEqual(expected)
+      return
+    return
   return

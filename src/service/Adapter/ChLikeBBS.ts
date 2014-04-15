@@ -39,6 +39,35 @@ module App.Adapter.ChLikeBBS {
       }
     }
 
+    parseSubjectTxt(url: string, txt: string): App.Entries {
+      var entries: App.Entries, entry: App.BoardEntry, reg: RegExp,
+        regRes: RegExpExecArray, baseUrl: string;
+
+      regRes = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(\w+)?/.exec(url);
+      baseUrl = "http://" + regRes[1] + "/test/read.cgi/" + regRes[3] + "/";
+
+      entries = {
+        url: url,
+        title: url,
+        data: []
+      };
+
+      reg = /^(\d+)\.dat<>(.+) \((\d+)\)$/gm;
+
+      while (regRes = reg.exec(txt)) {
+        entry = {
+          url: baseUrl + regRes[1] + "/",
+          title: regRes[2], // TODO 実体参照デコード
+          date: +regRes[1] * 1000,
+          resCount: +regRes[3]
+        };
+
+        entries.data.push(entry);
+      }
+
+      return entries;
+    }
+
     get(url: string): ng.IPromise<App.Entries> {
       return null;
     }
