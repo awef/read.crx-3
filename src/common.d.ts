@@ -4,13 +4,29 @@ declare module App {
   interface Entries {
     url: string;
     title: string;
-    date?: number;
-    entries: Entry[];
+    data: Entry[];
   }
 
   interface Entry {
     url: string;
     title: string;
+  }
+
+  interface Board extends Entries {
+    data: BoardEntry[];
+  }
+
+  interface BoardEntry extends Entry {
+    date: number;
+    resCount: number;
+  }
+
+  interface Thread extends Entries {
+    data: ThreadEntry[];
+    date: number;
+  }
+
+  interface ThreadEntry extends Entry {
     date?: number;
     text: string;
   }
