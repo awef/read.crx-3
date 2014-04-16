@@ -68,6 +68,49 @@ module App.Adapter.ChLikeBBS {
       return entries;
     }
 
+    parseDat(url: string, txt: string): App.Thread {
+      var thread: App.Thread, entry: App.ThreadEntry, reg: RegExp,
+        regRes: RegExpExecArray, numberOfBroken: number;
+
+      thread = {
+        url: url,
+        title: url,
+        date: null/*TODO*/,
+        data: []
+      };
+      reg = /^(.*?)<>(.*?)<>(.*?)<>(.*?)<>(.*?)(?:<>)?$/;
+      numberOfBroken = 0;
+
+      txt.split("\n").forEach(function (line, key) {
+        regRes = reg.exec(line);
+
+        if (regRes) {
+          if (key === 0) {
+            thread.title = regRes[5]; // TODO 実体参照デコード
+          }
+
+          thread.data.push({
+            url: url + (key + 1),
+            title: regRes[1] + " [" + regRes[2] + "]" + (regRes[3] ? " " : "") + regRes[3],
+            text: regRes[4]
+            // TODO date
+          });
+        }
+        else {
+          if (line !== "") {
+            numberOfBroken++;
+            thread.data.push({
+              url: url + key,
+              title: "</b>データ破損<b>",
+              text: "データが破損しています"
+            });
+          }
+        }
+      });
+
+      return thread.data.length === numberOfBroken ? null : thread;
+    }
+
     get(url: string): ng.IPromise<App.Entries> {
       return null;
     }
