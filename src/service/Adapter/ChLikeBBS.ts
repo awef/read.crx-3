@@ -39,8 +39,8 @@ module App.Adapter.ChLikeBBS {
       }
     }
 
-    parseSubjectTxt(url: string, txt: string): App.Entries {
-      var entries: App.Entries, entry: App.BoardEntry, reg: RegExp,
+    parseSubjectTxt(url: string, txt: string): App.Board {
+      var entries: App.Board, entry: App.BoardEntry, reg: RegExp,
         regRes: RegExpExecArray, baseUrl: string;
 
       regRes = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(\w+)?/.exec(url);
