@@ -100,7 +100,7 @@ module App.Adapter.ChLikeBBS {
           if (line !== "") {
             numberOfBroken++;
             thread.data.push({
-              url: url + key,
+              url: url + (key + 1),
               title: "</b>データ破損<b>",
               text: "データが破損しています"
             });
