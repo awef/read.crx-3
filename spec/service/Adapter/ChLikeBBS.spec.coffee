@@ -93,7 +93,6 @@ describe "chLikeBBSAdapter", ->
 
   describe ".parseDat", ->
     it "dat形式のテキストをパースする", ->
-      # TODO 破損データを与えた場合の挙動のテスト
       # TODO そもそもdatではない物が与えられた場合の挙動のテスト
 
       url = "http://qb5.2ch.net/test/read.cgi/operate/1234567890/"
@@ -135,6 +134,43 @@ describe "chLikeBBSAdapter", ->
             url: "http://qb5.2ch.net/test/read.cgi/operate/1234567890/5"
             title: "動け動けウゴウゴ２ちゃんねる [] 2011/04/04(月) 10:25:51.88 ID:aBcdEfg+0"
             text: " てす "
+          }
+        ]
+      return
+
+    it "一部が破損したdatも適切に扱える", ->
+      url = "http://__dummy.2ch.net/test/read.cgi/dummy/1234567890/"
+      dat = """
+        偽*** ★<><>2011/10/21(金) 19:26:30.52 ID:???<> てすと　試験テスト <>***を追跡する #dummy
+        </b> dummy <b><><>11/10/21(金) 20:49:40 ID:ehenfox<>62¥¥¥
+        ぬふあ <br> <>twitter
+        ***<><>2011/10/21(金) 20:50:00.66 ID:abcDeFgh<> よ <>
+      """
+
+      expect(@chLikeBBSAdapter.parseDat(url, dat)).toEqual
+        url: url,
+        date: null
+        title: "***を追跡する #dummy"
+        data: [
+          {
+            url: "http://__dummy.2ch.net/test/read.cgi/dummy/1234567890/1"
+            title: "偽*** ★ [] 2011/10/21(金) 19:26:30.52 ID:???"
+            text: " てすと　試験テスト "
+          }
+          {
+            url: "http://__dummy.2ch.net/test/read.cgi/dummy/1234567890/2"
+            title: "</b>データ破損<b>"
+            text: "データが破損しています"
+          }
+          {
+            url: "http://__dummy.2ch.net/test/read.cgi/dummy/1234567890/3"
+            title: "</b>データ破損<b>"
+            text: "データが破損しています"
+          }
+          {
+            url: "http://__dummy.2ch.net/test/read.cgi/dummy/1234567890/4"
+            title: "*** [] 2011/10/21(金) 20:50:00.66 ID:abcDeFgh"
+            text: " よ "
           }
         ]
       return
