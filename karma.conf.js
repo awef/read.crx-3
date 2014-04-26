@@ -3,10 +3,10 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      "lib/jquery/jquery.min.js",
-      "lib/angularjs/angular.min.js",
+      "bin/lib/jquery/jquery.min.js",
+      "bin/lib/angularjs/angular.min.js",
       "bin/script.js",
-      "lib/angularjs/angular-mocks.js",
+      "bower_components/angular-mocks/angular-mocks.js",
       "spec/**/*.coffee"
     ],
     preprocessors: {

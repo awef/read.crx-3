@@ -19,10 +19,6 @@ end
 
 
 
-rule %r{bin/.+\.js} => "%{^bin/lib/,lib/}X.js" do |t|
-  cp t.prerequisites[0], t.name
-end
-
 file "bin/manifest.json" => "src/manifest.json" do |t|
   cp t.prerequisites[0], t.name
 end
@@ -31,18 +27,12 @@ namespace :core do
   task :build => [
     "bin",
 
-    "bin/lib/jquery",
-    "bin/lib/jquery/jquery.min.js",
-
-    "bin/lib/angularjs",
-    "bin/lib/angularjs/angular.min.js",
-    "bin/lib/angularjs/angular-route.min.js",
-
     "bin/index.html",
     "bin/style.css",
     "bin/script.js",
 
-    "view:build"
+    "view:build",
+    "lib:copy"
   ]
 
   task :lint do
@@ -50,8 +40,6 @@ namespace :core do
   end
 
   directory "bin"
-  directory "bin/lib/angularjs"
-  directory "bin/lib/jquery"
 
   file "bin/index.html" => "src/index.haml" do |t|
     haml t.prerequisites[0], t.name
@@ -85,14 +73,19 @@ namespace :core do
 
     task :build => files
   end
-end
 
-namespace :lib do
-  task :dl_angular, :version do |t, args|
-    files = ["angular.min.js", "angular-route.min.js", "angular-mocks.js"]
+  namespace :lib do
+    task :copy do
+      sh "./node_modules/.bin/bower install"
 
-    files.each do |filename|
-      sh "wget -O lib/angularjs/#{filename} https://ajax.googleapis.com/ajax/libs/angularjs/#{args[:version]}/#{filename}"
+      {
+        "bin/lib/angularjs/angular.min.js" => "bower_components/angular/angular.min.js",
+        "bin/lib/angularjs/angular-route.min.js" => "bower_components/angular-route/angular-route.min.js",
+        "bin/lib/jquery/jquery.min.js" => "bower_components/jquery/dist/jquery.min.js"
+      }.each do |dist, src|
+        mkdir_p File.dirname(dist)
+        cp src, dist
+      end
     end
   end
 end

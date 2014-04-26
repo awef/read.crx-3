@@ -1,4 +1,5 @@
 /.sass-cache
 /bin
+/bower_components
 /coverage
 /node_modules
