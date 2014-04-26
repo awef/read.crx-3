@@ -73,9 +73,9 @@ namespace :core do
         .gsub("src/view/", "bin/view/")
         .gsub(".haml", ".html")
 
-      directory_path = html_path.gsub %r"/[^/]+$", ""
-      directory directory_path
-      files.push directory_path
+      dir_path = File.dirname html_path
+      directory dir_path
+      files.push dir_path
 
       file html_path => haml_path do |t|
         haml t.prerequisites[0], t.name
