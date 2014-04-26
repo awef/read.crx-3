@@ -54,7 +54,7 @@ namespace :core do
   directory "bin/lib/jquery"
 
   file "bin/index.html" => "src/index.haml" do |t|
-    haml(t.prerequisites[0], t.name)
+    haml t.prerequisites[0], t.name
   end
 
   file "bin/style.css" => FileList["src/style.scss", "src/**/*.scss"] do |t|
@@ -75,14 +75,14 @@ namespace :core do
         .gsub("src/view/", "bin/view/")
         .gsub(".haml", ".html")
 
-      directory_path = html_path.gsub(%r"/[^/]+$", "")
+      directory_path = html_path.gsub %r"/[^/]+$", ""
       directory directory_path
-      files.push(directory_path)
+      files.push directory_path
 
       file html_path => haml_path do |t|
-        haml(t.prerequisites[0], t.name)
+        haml t.prerequisites[0], t.name
       end
-      files.push(html_path)
+      files.push html_path
     end
 
     task :build => files
