@@ -66,9 +66,7 @@ namespace :core do
   end
 
   namespace :view do
-    files = ["debug/view"]
-
-    directory "debug/view"
+    files = []
 
     FileList["src/view/*.haml"].each do |haml_path|
       html_path = haml_path
