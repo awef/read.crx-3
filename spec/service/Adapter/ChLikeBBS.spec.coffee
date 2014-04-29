@@ -93,8 +93,6 @@ describe "chLikeBBSAdapter", ->
 
   describe ".parseDat", ->
     it "dat形式のテキストをパースする", ->
-      # TODO そもそもdatではない物が与えられた場合の挙動のテスト
-
       url = "http://qb5.2ch.net/test/read.cgi/operate/1234567890/"
       dat = """
         ﾉtasukeruyo </b>忍法帖【Lv=10,xxxPT】<b> </b>◆0a./bc.def <b><><>2011/04/04(月) 10:19:46.92 ID:abcdEfGH0 BE:1234567890-2BP(1)<> テスト。 <br> http://qb5.2ch.net/test/read.cgi/operate/132452341234/1 <br> <hr><font color="blue">Monazilla/1.00 (V2C/2.5.1)</font> <>[test] テスト 123 [ﾃｽﾄ]
@@ -173,6 +171,21 @@ describe "chLikeBBSAdapter", ->
             text: " よ "
           }
         ]
+      return
+
+    it "1行もdatとして解釈できなかった場合、nullを返す", ->
+      # 2chで一部のスレが302 -> 200で404.htmlが返される事が有る
+      url = "http://hibari.2ch.net/test/read.cgi/pc/123/"
+      dat = """
+      <html>
+        <head><title>test</title></head>
+        <body>
+          Error
+        </body>
+      </html>
+      """
+
+      expect(@chLikeBBSAdapter.parseDat(url, dat)).toBeNull()
       return
     return
   return
