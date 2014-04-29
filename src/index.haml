@@ -8,7 +8,13 @@
     %link(rel="stylesheet" href="style.css")
     %script(src="lib/jquery/jquery.min.js?v=#{Random.rand}")
     %script(src="lib/angularjs/angular.min.js?v=#{Random.rand}")
-    %script(src="lib/angularjs/angular-route.min.js?v=#{Random.rand}")
     %script(src="script.js?v=#{Random.rand}")
-  %body(data-ng-view)
-
+  %body
+    .index(data-ng-controller="IndexCtrl")
+      %h1 PanelContainerのテスト
+      .panelContainer(data-panelcontainer data-url="http://example.com")
+        %div {{url}}
+        %nav
+          %button.prev(data-ng-click="prev()") prev
+          %button.next(data-ng-click="next()") next
+        .content
