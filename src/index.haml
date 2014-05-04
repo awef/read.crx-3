@@ -12,9 +12,13 @@
   %body
     .index(data-ng-controller="IndexCtrl")
       %h1 PanelContainerのテスト
-      .panelContainer(data-panelcontainer data-url="http://example.com")
+      .panelContainer(data-panelcontainer data-url="view:index")
         %div {{url}}
         %nav
           %button.prev(data-ng-click="prev()") prev
           %button.next(data-ng-click="next()") next
+          %button(data-ng-click="changeUrl('view:index')") index
+          %button(data-ng-click="changeUrl('view:testA')") testA
+          %button(data-ng-click="changeUrl('view:testB')") testB
+          %button(data-ng-click="changeUrl('view:testC')") testC
         .content

@@ -8,11 +8,26 @@ angular
           scope.changeUrl(attrs.url);
 
           scope.$watch("url", function (url) {
+            var templateUrl: string;
+
             element.attr("data-url", url);
 
-            // TODO $scope.urlの値から適当なテンプレートを呼び出す
+            switch (url) {
+              case "view:index":
+                templateUrl = "/view/index.html";
+                break;
+              case "view:testA":
+                templateUrl = "/view/testA.html";
+                break;
+              case "view:testB":
+                templateUrl = "/view/testB.html";
+                break;
+              case "view:testC":
+                templateUrl = "/view/testC.html";
+                break;
+            }
 
-            $http.get("/view/index.html").then(function (res) {
+            $http.get(templateUrl).then(function (res) {
               element
                 .find(".content")
                   .empty()
