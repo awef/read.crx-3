@@ -80,7 +80,6 @@ namespace :core do
 
       {
         "bin/lib/angularjs/angular.min.js" => "bower_components/angular/angular.min.js",
-        "bin/lib/angularjs/angular-route.min.js" => "bower_components/angular-route/angular-route.min.js",
         "bin/lib/jquery/jquery.min.js" => "bower_components/jquery/dist/jquery.min.js"
       }.each do |dist, src|
         mkdir_p File.dirname(dist)

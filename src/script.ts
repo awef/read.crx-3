@@ -1,19 +1,7 @@
 ///<reference path="../lib/DefinitelyTyped/angularjs/angular.d.ts" />
 ///<reference path="../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="controller/index.ts" />
+///<reference path="directive/PanelContainer.ts" />
 
-// テスト用
-///<reference path="service/Adapter/ChLikeBBS.ts" />
-
-angular
-  .module("app", ["ngRoute", "BBSIndex"])
-    .config([
-      "$routeProvider",
-      function ($routeProvider) {
-        $routeProvider
-          .when("/", {
-            templateUrl: "view/index.html"
-          });
-      }
-    ]);
+angular.module("app", ["BBSIndex", "PanelContainer"]);
 
