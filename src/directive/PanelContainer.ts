@@ -30,12 +30,8 @@ angular
                 break;
             }
 
-            $http.get(templateUrl).then(function (res) {
-              element
-                .find(".content")
-                  .empty()
-                  .append($compile(res.data)(scope.$new()));
-            });
+
+            scope.templateUrl = templateUrl;
           });
         },
         controller: function ($scope) {

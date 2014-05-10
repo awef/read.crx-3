@@ -4,7 +4,9 @@ describe "[panelcontainer]", ->
   beforeEach ->
     module "PanelContainer"
 
-    inject ($httpBackend, $compile, $rootScope) =>
+    inject ($templateCache, $httpBackend, $compile, $rootScope) =>
+      @$templateCache = $templateCache
+
       @$httpBackend = $httpBackend
 
       for key in ["A", "B", "C"]
@@ -21,7 +23,7 @@ describe "[panelcontainer]", ->
 
       html = """
       <div data-panelcontainer data-url="view:testA">
-        <div class="content"></div>
+        <div class="content" data-ng-include="templateUrl"></div>
       </div>
       """
 
@@ -30,6 +32,7 @@ describe "[panelcontainer]", ->
         @element = $compile(html)(@scope)
         return
 
+      @$templateCache.removeAll()
       @$httpBackend.flush()
       return
 
@@ -44,6 +47,7 @@ describe "[panelcontainer]", ->
   describe "$scope.changeUrl", ->
     it  "指定されたURLに相当するテンプレートを読み込む", ->
       @scope.changeUrl "view:testB"
+      @$templateCache.removeAll()
       @$httpBackend.flush()
 
       waitsFor -> @element.find(".testB").length is 1
@@ -54,12 +58,14 @@ describe "[panelcontainer]", ->
     describe "履歴の最先端以外の場所に居た場合", ->
       beforeEach ->
         @scope.changeUrl "view:testB"
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testB").length is 1
 
         runs ->
           @scope.changeUrl "view:testC"
+          @$templateCache.removeAll()
           @$httpBackend.flush()
           return
 
@@ -67,6 +73,7 @@ describe "[panelcontainer]", ->
 
         runs ->
           @scope.prev()
+          @$templateCache.removeAll()
           @$httpBackend.flush()
           return
 
@@ -75,6 +82,7 @@ describe "[panelcontainer]", ->
 
       it "以降の履歴を捨てる", ->
         @scope.changeUrl "view:testA"
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testA").length is 1
@@ -97,12 +105,14 @@ describe "[panelcontainer]", ->
     describe "戻るべきURLが有る場合", ->
       beforeEach ->
         @scope.changeUrl "view:testB"
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testB").length is 1
 
         runs ->
           @scope.changeUrl "view:testC"
+          @$templateCache.removeAll()
           @$httpBackend.flush()
           return
 
@@ -111,6 +121,7 @@ describe "[panelcontainer]", ->
 
       it "戻る", ->
         @scope.prev()
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testB").length is 1
@@ -133,12 +144,14 @@ describe "[panelcontainer]", ->
     describe "進むべきURLが有る場合", ->
       beforeEach ->
         @scope.changeUrl "view:testB"
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testB").length is 1
 
         runs ->
           @scope.changeUrl "view:testC"
+          @$templateCache.removeAll()
           @$httpBackend.flush()
           return
 
@@ -146,6 +159,7 @@ describe "[panelcontainer]", ->
 
         runs ->
           @scope.prev()
+          @$templateCache.removeAll()
           @$httpBackend.flush()
           return
 
@@ -154,6 +168,7 @@ describe "[panelcontainer]", ->
 
       it "進む", ->
         @scope.next()
+        @$templateCache.removeAll()
         @$httpBackend.flush()
 
         waitsFor -> @element.find(".testC").length is 1
