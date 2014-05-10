@@ -109,93 +109,114 @@ border=0></A>
   """
 
   @dummyData.bbsIndex =
-    categories: [
+    data: [
       {
-        name: "地震",
-        boards: [
+        url: null
+        title: "地震"
+        data: [
           {
-            name: "地震headline",
+            title: "地震headline"
             url: "http://headline.2ch.net/bbynamazu/"
-          },
+            data: null
+          }
           {
-            name: "地震速報",
+            title: "地震速報"
             url: "http://anago.2ch.net/namazuplus/"
-          },
+            data: null
+          }
           {
-            name: "臨時地震",
+            title: "臨時地震"
             url: "http://hayabusa.2ch.net/eq/"
-          },
+            data: null
+          }
           {
-            name: "臨時地震+",
+            title: "臨時地震+"
             url: "http://hayabusa2.2ch.net/eqplus/"
-          },
+            data: null
+          }
           {
-            name: "緊急自然災害",
+            title: "緊急自然災害"
             url: "http://uni.2ch.net/lifeline/"
+            data: null
           }
         ]
-      },
+      }
       {
-        name: "おすすめ",
-        boards: [
+        url: null
+        title: "おすすめ"
+        data: [
           {
-            name: "プロ野球",
+            title: "プロ野球"
             url: "http://uni.2ch.net/base/"
-          },
+            data: null
+          }
           {
-            name: "家電製品",
+            title: "家電製品"
             url: "http://awabi.2ch.net/kaden/"
-          },
+            data: null
+          }
           {
-            name: "写真撮影",
+            title: "写真撮影"
             url: "http://ikura.2ch.net/photo/"
-          },
+            data: null
+          }
           {
-            name: "神社・仏閣",
+            title: "神社・仏閣"
             url: "http://ikura.2ch.net/kyoto/"
-          },
+            data: null
+          }
           {
-            name: "きのこ",
+            title: "きのこ"
             url: "http://uni.2ch.net/kinoko/"
+            data: null
           }
         ]
-      },
+      }
       {
-        name: "特別企画",
-        boards: [
+        url: null
+        title: "特別企画"
+        data: [
           {
-            name: "テレビ番組欄",
+            title: "テレビ番組欄"
             url: "http://epg.2ch.net/tv2chwiki/"
+            data: null
           }
         ]
-      },
+      }
       {
-        name: "be",
-        boards: [
+        url: null
+        title: "be"
+        data: [
           {
-            name: "面白ネタnews",
+            title: "面白ネタnews"
             url: "http://kohada.2ch.net/be/"
-          },
+            data: null
+          }
           {
-            name: "なんでも質問",
+            title: "なんでも質問"
             url: "http://ikura.2ch.net/nandemo/"
-          },
+            data: null
+          }
           {
-            name: "朝生",
+            title: "朝生"
             url: "http://ikura.2ch.net/argue/"
+            data: null
           }
         ]
-      },
+      }
       {
-        name: "まちＢＢＳ",
-        boards: [
+        url: null
+        title: "まちＢＢＳ"
+        data: [
           {
-            name: "会議室",
+            title: "会議室"
             url: "http://www.machi.to/tawara/"
-          },
+            data: null
+          }
           {
-            name: "北海道",
+            title: "北海道"
             url: "http://hokkaido.machi.to/hokkaidou/"
+            data: null
           }
         ]
       }

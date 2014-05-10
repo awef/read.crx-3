@@ -12,6 +12,14 @@ declare module App {
     title: string;
   }
 
+  interface BBSMenu extends Entries {
+    data: BBSCategory[];
+  }
+
+  interface BBSCategory extends Entry {
+    data: Board[];
+  }
+
   interface Board extends Entries {
     data: BoardEntry[];
   }

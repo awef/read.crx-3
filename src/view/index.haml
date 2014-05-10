@@ -2,9 +2,9 @@
   %h1 view/index
   .message {{message}}
   %ul
-    %li(data-ng-repeat="category in bbsIndex.categories")
-      {{category.name}}
+    %li(data-ng-repeat="category in bbsMenu.data")
+      {{category.title}}
       %ul
-        %li(data-ng-repeat="board in category.boards")
-          %a(href="{{board.url}}" target="_blank") {{board.name}}
+        %li(data-ng-repeat="board in category.data")
+          %a(href="{{board.url}}" target="_blank") {{board.title}}
 
