@@ -5,17 +5,26 @@ angular
     .directive("panelcontainer", function ($http, $compile) {
       return {
         link: function (scope, element, attrs) {
-          scope.changeUrl(attrs.url);
+          scope.url = attrs.url;
 
-          scope.$watch("history.current", function () {
-            var url: string, templateUrl: string;
+          scope.$watch("url", function () {
+            var templateUrl: string;
 
-            url = scope.history.stack[scope.history.current];
+            element.attr("data-url", scope.url);
 
-            element.attr("data-url", url);
+            if (!scope._historyLock) {
+              if (scope.history.stack.length - 1 !== scope.history.current) {
+                scope.history.stack = scope.history.stack.slice(0, scope.history.current + 1);
+              }
+              scope.history.stack.push(scope.url);
+              scope.history.current++;
+            }
+            else {
+              scope._historyLock = false;
+            }
 
             // TODO テンプレートの判定を専用のサービスに任せる
-            switch (url) {
+            switch (scope.url) {
               case "view:index":
                 templateUrl = "/view/index.html";
                 break;
@@ -30,7 +39,6 @@ angular
                 break;
             }
 
-
             scope.templateUrl = templateUrl;
           });
         },
@@ -42,7 +50,9 @@ angular
 
           $scope.prev = function () {
             if ($scope.history.current > 0) {
+              $scope._historyLock = true;
               $scope.history.current--;
+              $scope.url = $scope.history.stack[$scope.history.current];
               return true;
             }
             else {
@@ -53,7 +63,9 @@ angular
 
           $scope.next = function () {
             if ($scope.history.current < $scope.history.stack.length - 1) {
+              $scope._historyLock = true;
               $scope.history.current++;
+              $scope.url = $scope.history.stack[$scope.history.current];
               return true;
             }
             else {
@@ -63,12 +75,7 @@ angular
           };
 
           $scope.changeUrl = function (url: string) {
-            if ($scope.history.stack.length - 1 !== $scope.history.current) {
-              $scope.history.stack = $scope.history.stack.slice(0, $scope.history.current + 1);
-            }
-
-            $scope.history.stack.push(url);
-            $scope.history.current++;
+            $scope.url = url;
           };
         }
       };

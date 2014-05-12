@@ -52,7 +52,10 @@ describe "[panelcontainer]", ->
 
       waitsFor -> @element.find(".testB").length is 1
 
-      runs -> expect(@element.find("h1").text()).toBe("view/testB"); return
+      runs ->
+        expect(@scope.url).toBe("view:testB")
+        expect(@element.find("h1").text()).toBe("view/testB")
+        return
       return
 
     describe "履歴の最先端以外の場所に居た場合", ->
@@ -88,6 +91,7 @@ describe "[panelcontainer]", ->
         waitsFor -> @element.find(".testA").length is 1
 
         runs ->
+          expect(@scope.url).toBe("view:testA")
           expect(@scope.history.stack[@scope.history.stack.length - 1])
             .toBe("view:testA")
           return
@@ -98,6 +102,7 @@ describe "[panelcontainer]", ->
   describe "$scope.prev", ->
     describe "戻るべきURLが無い場合", ->
       it "何もしない", ->
+        expect(@scope.url).toBe("view:testA")
         expect(@scope.prev()).toBeFalsy()
         return
       return
@@ -127,6 +132,7 @@ describe "[panelcontainer]", ->
         waitsFor -> @element.find(".testB").length is 1
 
         runs ->
+          expect(@scope.url).toBe("view:testB")
           expect(@element.find("h1").text()).toBe("view/testB")
           expect(@element.attr("data-url")).toBe("view:testB")
           return
@@ -137,6 +143,7 @@ describe "[panelcontainer]", ->
   describe "$scope.next", ->
     describe "進むべきURLが無い場合", ->
       it "何もしない", ->
+        expect(@scope.url).toBe("view:testA")
         expect(@scope.next()).toBeFalsy()
         return
       return
@@ -174,6 +181,7 @@ describe "[panelcontainer]", ->
         waitsFor -> @element.find(".testC").length is 1
 
         runs ->
+          expect(@scope.url).toBe("view:testC")
           expect(@element.find("h1").text()).toBe("view/testC")
           expect(@element.attr("data-url")).toBe("view:testC")
           return
