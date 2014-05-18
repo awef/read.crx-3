@@ -111,8 +111,41 @@ module App.Adapter.ChLikeBBS {
       return thread.data.length === numberOfBroken ? null : thread;
     }
 
+    parse (url: string, txt: string): App.Entries {
+      if (url.indexOf("read.cgi") === -1) {
+        return this.parseSubjectTxt(url, txt);
+      }
+      else {
+        return this.parseDat(url, txt);
+      }
+    }
+
+    static getDataUrl (url: string): string {
+      var tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(?:(\d+)\/)?$/.exec(url);
+
+      return "http://" + tmp[1] + "/" + tmp[3] + "/subject.txt"
+    }
+
     get(url: string): ng.IPromise<App.Entries> {
-      return null;
+      var dataUrl: string, deferred: ng.IDeferred<App.Entries>;
+
+      dataUrl = AdapterService.getDataUrl(url);
+
+      deferred = this.$q.defer();
+
+      this.cachedHTTP.get(dataUrl, 1000 * 60 * 60, "Shift_JIS").then(
+        (response) => {
+          var parseResult: App.Entries;
+
+          parseResult = this.parse(url, response);
+          deferred[parseResult ? "resolve" : "reject"](parseResult);
+        },
+        function() {
+          deferred.reject(null);
+        }
+      );
+
+      return deferred.promise;
     }
   }
 

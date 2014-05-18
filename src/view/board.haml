@@ -1,0 +1,8 @@
+.board(data-ng-controller="BoardCtrl")
+  %h1 view/board
+  .message {{message}}
+  .hoge {{url}}
+  %ul
+    %li(data-ng-repeat="boardEntry in boardEntries.data")
+      %a(data-ng-click="url = boardEntry.url" target="_blank") {{boardEntry.title}}
+

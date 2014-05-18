@@ -6,5 +6,5 @@
       {{category.title}}
       %ul
         %li(data-ng-repeat="board in category.data")
-          %a(href="{{board.url}}" target="_blank") {{board.title}}
+          %a(href="" data-ng-click="move(board.url)") {{board.title}}
 

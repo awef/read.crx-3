@@ -2,10 +2,11 @@
 ///<reference path="../../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="../service/Adapter/AdapterAgent.ts" />
 
-interface IndexCtrlScope {
+interface IndexCtrlScope extends ng.IScope {
   message: string;
   bbsMenu: App.BBSMenu;
   getBBSMenu: Function;
+  move: Function;
 }
 
 class IndexCtrl {
@@ -18,6 +19,10 @@ class IndexCtrl {
       function (bbsMenu: App.BBSMenu) {
         $scope.message = "bbsmenu取得成功";
         $scope.bbsMenu = bbsMenu;
+
+        $scope.move = (url: string) => {
+          (<any>$scope.$parent.$parent).url = url;
+        };
       },
       function () {
         $scope.message = "bbsmenu取得失敗";

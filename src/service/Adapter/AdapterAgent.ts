@@ -61,11 +61,12 @@ module App.Adapter.AdapterAgent {
   }
 
   angular.module("AdapterAgent", ["BBSMenuAdapter", "ChLikeBBS"])
-    .factory("adapterAgent", function ($rootScope, $q, bbsMenuAdapter) {
+    .factory("adapterAgent", function ($rootScope, $q, bbsMenuAdapter, chLikeBBSAdapter) {
       var service: AdapterService;
 
       service = new AdapterService($rootScope, $q);
       service.register(bbsMenuAdapter);
+      service.register(chLikeBBSAdapter);
 
       return service;
     });

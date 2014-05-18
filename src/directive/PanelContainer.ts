@@ -39,6 +39,11 @@ angular
                 break;
             }
 
+            // TODO
+            if (!templateUrl) {
+              templateUrl = "/view/board.html";
+            }
+
             scope.templateUrl = templateUrl;
           });
         },
