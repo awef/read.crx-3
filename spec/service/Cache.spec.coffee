@@ -31,40 +31,32 @@ describe "App.CacheService", ->
     return
 
   describe ".prototype.openDB", ->
-    it "DBを開く処理のpromiseをgetDBに格納する", ->
-      openDBCallback = jasmine.createSpy()
-      getDBCallback = jasmine.createSpy()
+    it "DBを開く処理のpromiseをgetDBに格納する", (done) ->
+      getDBCallback = jasmine.createSpy("getDBCallback")
 
-      @cacheService.openDB("testCacheDB").then(openDBCallback)
-      @cacheService.getDB().then(getDBCallback)
-
-      waitsFor -> openDBCallback.wasCalled
-
-      runs ->
-        expect(getDBCallback).toHaveBeenCalled()
+      @cacheService.openDB("testCacheDB").then =>
+        setTimeout (->
+          expect(getDBCallback).toHaveBeenCalled()
+          done()
+          return
+        ), 0
         return
+
+      @cacheService.getDB().then(getDBCallback)
       return
     return
 
   describe ".prototype.getDB", ->
     describe "openDBが実行されていない状態の場合", ->
-      it "何もせずにrejectする", ->
-        callback = jasmine.createSpy()
-
-        @cacheService.getDB().then(null, callback)
-
-        waitsFor -> callback.wasCalled
+      it "何もせずにrejectする", (done) ->
+        @cacheService.getDB().then(null, done)
         return
       return
 
   describe ".prototype.set", ->
     describe "openDBが実行されていない状態で実行された場合", ->
-      it "何もせずにrejectする", ->
-        callback = jasmine.createSpy()
-
-        @cacheService.set(@dummyCache).then(null, callback)
-
-        waitsFor -> callback.wasCalled
+      it "何もせずにrejectする", (done) ->
+        @cacheService.set(@dummyCache).then(null, done)
         return
       return
 
@@ -73,61 +65,39 @@ describe "App.CacheService", ->
         @cacheService.openDB("testCacheDB")
         return
 
-      it "与えられたキャッシュをDBに格納する", ->
-        callback = jasmine.createSpy()
-
-        @cacheService.set(@dummyCache).then(callback)
-
-        waitsFor -> callback.wasCalled
+      it "与えられたキャッシュをDBに格納する", (done) ->
+        @cacheService.set(@dummyCache).then(done)
         return
       return
     return
 
   describe ".prototype.get", ->
     describe "openDBが実行されていない状態で実行された場合", ->
-      it "何もせずにrejectする", ->
-        callback = jasmine.createSpy()
-
-        @cacheService.get(@dummyCache.key).then(null, callback)
-
-        waitsFor -> callback.wasCalled
+      it "何もせずにrejectする", (done) ->
+        @cacheService.get(@dummyCache.key).then(null, done)
         return
       return
 
     describe "openDBが実行されている場合", ->
-      beforeEach ->
-        setCallback = jasmine.createSpy()
-
+      beforeEach (done) ->
         @cacheService.openDB("testCacheDB")
-        @cacheService.set(@dummyCache).then(setCallback)
-
-        waitsFor -> setCallback.wasCalled
+        @cacheService.set(@dummyCache).then(done)
         return
 
       describe "DBに格納されているキャッシュのキーを指定された場合", ->
-        it "該当するキャッシュをコールバックに渡す", ->
-          callback = jasmine.createSpy()
-
-          @cacheService.get(@dummyCache.key).then(callback)
-
-          waitsFor -> callback.wasCalled
-
-          runs ->
-            expect(callback).toHaveBeenCalledWith(@dummyCache)
+        it "該当するキャッシュをコールバックに渡す", (done) ->
+          @cacheService.get(@dummyCache.key).then (res) =>
+            expect(res).toEqual(@dummyCache)
+            done()
             return
           return
         return
 
       describe "DBに格納されていないキャッシュのキーを指定された場合", ->
-        it "コールバックにnullを渡す", ->
-          callback = jasmine.createSpy()
-
-          @cacheService.get(@dummyCache.key + "_0").then(callback)
-
-          waitsFor -> callback.wasCalled
-
-          runs ->
-            expect(callback).toHaveBeenCalledWith(null)
+        it "コールバックにnullを渡す", (done) ->
+          @cacheService.get(@dummyCache.key + "_0").then (res) =>
+            expect(res).toBeNull()
+            done()
             return
           return
         return
@@ -136,54 +106,43 @@ describe "App.CacheService", ->
 
   describe ".prototype.removeOlderThan", ->
     describe "openDBが実行されていない状態で実行された場合", ->
-      it "何もしない", ->
-        callback = jasmine.createSpy()
-
-        @cacheService.removeOlderThan(Date.now()).then(null, callback)
-
-        waitsFor -> callback.wasCalled
+      it "何もしない", (done) ->
+        @cacheService.removeOlderThan(Date.now()).then null, ->
+          done()
+          return
         return
       return
 
     describe "openDBが実行されている場合", ->
-      beforeEach ->
-        callback = jasmine.createSpy()
-
-        @cacheService.openDB("testCacheDB").then(callback)
-
-        waitsFor -> callback.wasCalled
+      beforeEach (done) ->
+        @cacheService.openDB("testCacheDB").then ->
+          done()
+          return
         return
 
-      it "指定された時刻よりもlastUsedが古いエントリを全て削除する", ->
+      it "指定された時刻よりもlastUsedが古いエントリを全て削除する", (done) ->
         cacheA = generateDummyCache()
         cacheB = generateDummyCache(Date.now() + 50)
         cacheC = generateDummyCache(Date.now() + 100)
 
-        getCallback = jasmine.createSpy("getCallback")
-
-        runs =>
-          @$q
-            .all([
-              @cacheService.set(cacheA)
-              @cacheService.set(cacheB)
-              @cacheService.set(cacheC)
+        @$q
+          .all([
+            @cacheService.set(cacheA)
+            @cacheService.set(cacheB)
+            @cacheService.set(cacheC)
+          ])
+          .then () =>
+            @cacheService.removeOlderThan(cacheB.lastUsed + 10)
+          .then () =>
+            @$q.all([
+              @cacheService.get(cacheA.key)
+              @cacheService.get(cacheB.key)
+              @cacheService.get(cacheC.key)
             ])
-            .then () =>
-              @cacheService.removeOlderThan(cacheB.lastUsed + 10)
-            .then () =>
-              @$q.all([
-                @cacheService.get(cacheA.key)
-                @cacheService.get(cacheB.key)
-                @cacheService.get(cacheC.key)
-              ])
-            .then(getCallback)
-          return
-
-        waitsFor ->
-          getCallback.wasCalled
-
-        runs ->
-          expect(getCallback).toHaveBeenCalledWith([null, null, cacheC])
+          .then (res) ->
+            expect(res).toEqual([null, null, cacheC])
+            done()
+            return
           return
         return
       return

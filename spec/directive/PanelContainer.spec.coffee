@@ -1,7 +1,7 @@
 describe "[panelcontainer]", ->
   "use strict"
 
-  beforeEach ->
+  beforeEach (done) ->
     module "PanelContainer"
 
     inject ($templateCache, $httpBackend, $compile, $rootScope) =>
@@ -34,9 +34,9 @@ describe "[panelcontainer]", ->
 
       @$templateCache.removeAll()
       @$httpBackend.flush()
-      return
 
-    waitsFor -> @element.find(".testA").length is 1
+      done()
+      return
     return
 
   afterEach ->
@@ -45,17 +45,13 @@ describe "[panelcontainer]", ->
     return
 
   describe "$scope.changeUrl", ->
-    it  "指定されたURLに相当するテンプレートを読み込む", ->
+    it  "指定されたURLに相当するテンプレートを読み込む", () ->
       @scope.changeUrl "view:testB"
       @$templateCache.removeAll()
       @$httpBackend.flush()
 
-      waitsFor -> @element.find(".testB").length is 1
-
-      runs ->
-        expect(@scope.url).toBe("view:testB")
-        expect(@element.find("h1").text()).toBe("view/testB")
-        return
+      expect(@scope.url).toBe("view:testB")
+      expect(@element.find("h1").text()).toBe("view/testB")
       return
 
     describe "履歴の最先端以外の場所に居た場合", ->
@@ -64,23 +60,13 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testB").length is 1
+        @scope.changeUrl "view:testC"
+        @$templateCache.removeAll()
+        @$httpBackend.flush()
 
-        runs ->
-          @scope.changeUrl "view:testC"
-          @$templateCache.removeAll()
-          @$httpBackend.flush()
-          return
-
-        waitsFor -> @element.find(".testC").length is 1
-
-        runs ->
-          @scope.prev()
-          @$templateCache.removeAll()
-          @$httpBackend.flush()
-          return
-
-        waitsFor -> @element.find(".testB").length is 1
+        @scope.prev()
+        @$templateCache.removeAll()
+        @$httpBackend.flush()
         return
 
       it "以降の履歴を捨てる", ->
@@ -88,13 +74,9 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testA").length is 1
-
-        runs ->
-          expect(@scope.url).toBe("view:testA")
-          expect(@scope.history.stack[@scope.history.stack.length - 1])
-            .toBe("view:testA")
-          return
+        expect(@scope.url).toBe("view:testA")
+        expect(@scope.history.stack[@scope.history.stack.length - 1])
+          .toBe("view:testA")
         return
       return
     return
@@ -113,15 +95,9 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testB").length is 1
-
-        runs ->
-          @scope.changeUrl "view:testC"
-          @$templateCache.removeAll()
-          @$httpBackend.flush()
-          return
-
-        waitsFor -> @element.find(".testC").length is 1
+        @scope.changeUrl "view:testC"
+        @$templateCache.removeAll()
+        @$httpBackend.flush()
         return
 
       it "戻る", ->
@@ -129,13 +105,9 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testB").length is 1
-
-        runs ->
-          expect(@scope.url).toBe("view:testB")
-          expect(@element.find("h1").text()).toBe("view/testB")
-          expect(@element.attr("data-url")).toBe("view:testB")
-          return
+        expect(@scope.url).toBe("view:testB")
+        expect(@element.find("h1").text()).toBe("view/testB")
+        expect(@element.attr("data-url")).toBe("view:testB")
         return
       return
     return
@@ -154,23 +126,13 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testB").length is 1
+        @scope.changeUrl "view:testC"
+        @$templateCache.removeAll()
+        @$httpBackend.flush()
 
-        runs ->
-          @scope.changeUrl "view:testC"
-          @$templateCache.removeAll()
-          @$httpBackend.flush()
-          return
-
-        waitsFor -> @element.find(".testC").length is 1
-
-        runs ->
-          @scope.prev()
-          @$templateCache.removeAll()
-          @$httpBackend.flush()
-          return
-
-        waitsFor -> @element.find(".testB").length is 1
+        @scope.prev()
+        @$templateCache.removeAll()
+        @$httpBackend.flush()
         return
 
       it "進む", ->
@@ -178,14 +140,10 @@ describe "[panelcontainer]", ->
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        waitsFor -> @element.find(".testC").length is 1
-
-        runs ->
-          expect(@scope.url).toBe("view:testC")
-          expect(@element.find("h1").text()).toBe("view/testC")
-          expect(@element.attr("data-url")).toBe("view:testC")
-          return
-         return
+        expect(@scope.url).toBe("view:testC")
+        expect(@element.find("h1").text()).toBe("view/testC")
+        expect(@element.attr("data-url")).toBe("view:testC")
+        return
       return
     return
   return
