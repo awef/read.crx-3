@@ -44,9 +44,9 @@ describe "[panelcontainer]", ->
     @$httpBackend.verifyNoOutstandingRequest()
     return
 
-  describe "$scope.changeUrl", ->
+  describe "$scope.url", ->
     it  "指定されたURLに相当するテンプレートを読み込む", () ->
-      @scope.changeUrl "view:testB"
+      @scope.url = "view:testB"
       @$templateCache.removeAll()
       @$httpBackend.flush()
 
@@ -56,11 +56,11 @@ describe "[panelcontainer]", ->
 
     describe "履歴の最先端以外の場所に居た場合", ->
       beforeEach ->
-        @scope.changeUrl "view:testB"
+        @scope.url = "view:testB"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        @scope.changeUrl "view:testC"
+        @scope.url = "view:testC"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
@@ -70,7 +70,7 @@ describe "[panelcontainer]", ->
         return
 
       it "以降の履歴を捨てる", ->
-        @scope.changeUrl "view:testA"
+        @scope.url = "view:testA"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
@@ -91,11 +91,11 @@ describe "[panelcontainer]", ->
 
     describe "戻るべきURLが有る場合", ->
       beforeEach ->
-        @scope.changeUrl "view:testB"
+        @scope.url = "view:testB"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        @scope.changeUrl "view:testC"
+        @scope.url = "view:testC"
         @$templateCache.removeAll()
         @$httpBackend.flush()
         return
@@ -122,11 +122,11 @@ describe "[panelcontainer]", ->
 
     describe "進むべきURLが有る場合", ->
       beforeEach ->
-        @scope.changeUrl "view:testB"
+        @scope.url = "view:testB"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 
-        @scope.changeUrl "view:testC"
+        @scope.url = "view:testC"
         @$templateCache.removeAll()
         @$httpBackend.flush()
 

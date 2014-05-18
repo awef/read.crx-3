@@ -73,10 +73,6 @@ angular
               return false;
             }
           };
-
-          $scope.changeUrl = function (url: string) {
-            $scope.url = url;
-          };
         }
       };
     });
