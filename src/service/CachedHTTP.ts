@@ -1,19 +1,22 @@
 ///<reference path="../../lib/DefinitelyTyped/angularjs/angular.d.ts" />
 ///<reference path="Cache.ts" />
+///<reference path="XHR.ts" />
 
 module App.CachedHTTP {
   export class CachedHTTP {
     $http: ng.IHttpService;
     $q: ng.IQService;
     cacheService: App.Cache.CacheService;
+    xhrService: App.XHR.XHRService;
 
-    constructor ($http, $q, cacheService) {
+    constructor ($http, $q, cacheService, xhrService) {
       this.$http = $http;
       this.$q = $q;
       this.cacheService = cacheService;
+      this.xhrService = xhrService;
     }
 
-    get (url: string, expire: number = 0): ng.IPromise<string> {
+    get (url: string, expire: number = 0, charSet?: string): ng.IPromise<string> {
       var deferred: ng.IDeferred<string>, updateNeeded: boolean;
 
       deferred = this.$q.defer();
@@ -47,10 +50,20 @@ module App.CachedHTTP {
           }
         )
         .finally(() => {
+          var httpGetPromise;
+
           if (updateNeeded) {
-            // GET実行
-            this.$http({method: 'GET', url: url})
-              // 成功時、resolveしてキャッシュを保存
+            if (charSet) {
+              this.xhrService.overrideMimeType("text/plain; charset=" + charSet, () => {
+                httpGetPromise = this.$http({method: 'GET', url: url})
+              });
+            }
+            else {
+              httpGetPromise = this.$http({method: 'GET', url: url})
+            }
+
+            // 成功時、resolveしてキャッシュを保存
+            httpGetPromise
               .success((response, status, headers) => {
                 var cache: App.Cache.CacheEntry, lastModified: number;
 
@@ -84,9 +97,9 @@ module App.CachedHTTP {
     }
   }
 
-  angular.module("CachedHTTP", ["Cache"])
-    .factory("cachedHTTP", function ($http, $q, cacheService) {
-      return new CachedHTTP($http, $q, cacheService);
+  angular.module("CachedHTTP", ["Cache", "XHR"])
+    .factory("cachedHTTP", function ($http, $q, cacheService, xhrService) {
+      return new CachedHTTP($http, $q, cacheService, xhrService);
     });
 }
 
