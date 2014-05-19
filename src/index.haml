@@ -11,13 +11,8 @@
     %script(src="script.js?v=#{Random.rand}")
   %body
     .index(data-ng-controller="IndexCtrl")
-      %h1 PanelContainerのテスト
       .panelContainer(data-panelcontainer data-url="view:index")
         %nav
           %button.prev(data-ng-click="prev()" data-ng-disabled="history.current === 0") prev
           %button.next(data-ng-click="next()" data-ng-disabled="history.stack.length === history.current + 1") next
-          %button(data-ng-click="url = 'view:index'") index
-          %button(data-ng-click="url = 'view:testA'") testA
-          %button(data-ng-click="url = 'view:testB'") testB
-          %button(data-ng-click="url = 'view:testC'") testC
         .content(data-ng-include="templateUrl")
