@@ -2,6 +2,7 @@
 ///<reference path="../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="controller/index.ts" />
 ///<reference path="controller/board.ts" />
+///<reference path="controller/thread.ts" />
 ///<reference path="directive/PanelContainer.ts" />
 
 angular.module("app", ["controller/index", "PanelContainer"]);

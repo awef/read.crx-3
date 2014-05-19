@@ -1,0 +1,8 @@
+.thread(data-ng-controller="ThreadCtrl")
+  %h1 view/thread
+  .message {{message}}
+  .hoge {{url}}
+  %article(data-ng-repeat="threadEntry in thread.data")
+    {{threadEntry.title}}
+    %br
+    {{threadEntry.text}}

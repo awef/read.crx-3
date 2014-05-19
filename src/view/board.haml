@@ -4,5 +4,5 @@
   .hoge {{url}}
   %ul
     %li(data-ng-repeat="boardEntry in boardEntries.data")
-      %a(data-ng-click="url = boardEntry.url" target="_blank") {{boardEntry.title}}
+      %a(href="" data-ng-click="move(boardEntry.url)" target="_blank") {{boardEntry.title}}
 

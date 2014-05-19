@@ -121,9 +121,15 @@ module App.Adapter.ChLikeBBS {
     }
 
     static getDataUrl (url: string): string {
-      var tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(?:(\d+)\/)?$/.exec(url);
+      var tmp;
 
-      return "http://" + tmp[1] + "/" + tmp[3] + "/subject.txt"
+      if (tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(?:(\d+)\/)?$/.exec(url)) {
+        return "http://" + tmp[1] + "/" + tmp[3] + "/subject.txt"
+      }
+      else {
+        tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(?:test|bbs)\/read\.cgi\/(\w+)\/(\d+)\/(?:(\d+)\/)?$/.exec(url);
+        return "http://" + tmp[1] + "/" + tmp[3] + "/dat/" + tmp[4] + ".dat";
+      }
     }
 
     get(url: string): ng.IPromise<App.Entries> {

@@ -39,9 +39,13 @@ angular
                 break;
             }
 
-            // TODO
             if (!templateUrl) {
-              templateUrl = "/view/board.html";
+              if (/\/read\.cgi\//.test(scope.url)) {
+                templateUrl = "/view/thread.html";
+              }
+              else {
+                templateUrl = "/view/board.html";
+              }
             }
 
             scope.templateUrl = templateUrl;

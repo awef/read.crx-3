@@ -6,6 +6,7 @@ interface BoardCtrlScope {
   url: string;
   message: string;
   boardEntries: App.Board;
+  move: Function;
 }
 
 class BoardCtrl {
@@ -15,6 +16,9 @@ class BoardCtrl {
     adapterAgent.get($scope.url).then(
       (res) => {
         $scope.boardEntries = <App.Board>res;
+        $scope.move = (url: string) => {
+          (<any>$scope.$parent.$parent).url = url;
+        };
       },
       () => {
         $scope.message = "取得失敗";
