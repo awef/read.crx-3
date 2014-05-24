@@ -1,8 +1,12 @@
 .board(data-ng-controller="BoardCtrl")
-  %h1 view/board
+  %h1
+    %a(href="{{url}}") {{url}}
   .message {{message}}
-  .hoge {{url}}
-  %ul
-    %li(data-ng-repeat="boardEntry in boardEntries.data")
-      %a(href="" data-ng-click="move(boardEntry.url)" target="_blank") {{boardEntry.title}}
-
+  %table
+    %thead
+      %th タイトル
+      %th レス数
+    %tbody
+      %tr(data-ng-repeat="boardEntry in boardEntries.data" data-ng-click="move(boardEntry.url)")
+        %td {{boardEntry.title}}
+        %td {{boardEntry.resCount}}
