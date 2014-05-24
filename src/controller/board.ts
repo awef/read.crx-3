@@ -15,6 +15,7 @@ class BoardCtrl {
 
     adapterAgent.get($scope.url).then(
       (res) => {
+        $scope.message = "取得成功"
         $scope.boardEntries = <App.Board>res;
         $scope.move = (url: string) => {
           (<any>$scope.$parent.$parent).url = url;
