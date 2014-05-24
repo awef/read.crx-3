@@ -2,7 +2,7 @@
 ///<reference path="../../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="../service/Adapter/AdapterAgent.ts" />
 
-interface BoardCtrlScope {
+interface BoardCtrlScope extends ng.IScope {
   url: string;
   message: string;
   boardEntries: App.Board;
