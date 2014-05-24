@@ -2,8 +2,14 @@
 ///<reference path="../../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="../service/Adapter/AdapterAgent.ts" />
 
+interface ThreadCtrlScope extends ng.IScope {
+  url: string;
+  message: string;
+  thread: App.Thread;
+}
+
 class ThreadCtrl {
-  constructor ($scope, adapterAgent: App.AdapterService) {
+  constructor ($scope: ThreadCtrlScope, adapterAgent: App.AdapterService) {
     $scope.message = "取得中"
 
     adapterAgent.get($scope.url).then(
