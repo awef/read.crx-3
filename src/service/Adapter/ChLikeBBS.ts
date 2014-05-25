@@ -75,7 +75,7 @@ module App.Adapter.ChLikeBBS {
       thread = {
         url: url,
         title: url,
-        date: null/*TODO*/,
+        date: +/\/(\d+)\/$/.exec(url)[1] * 1000,
         data: []
       };
       reg = /^(.*?)<>(.*?)<>(.*?)<>(.*?)<>(.*?)(?:<>)?$/;

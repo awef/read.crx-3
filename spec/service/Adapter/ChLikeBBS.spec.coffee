@@ -105,7 +105,7 @@ describe "chLikeBBSAdapter", ->
 
       expect(@chLikeBBSAdapter.parseDat(url, dat)).toEqual
         url: url,
-        date: null
+        date: 1234567890 * 1000
         title: "[test] テスト 123 [ﾃｽﾄ]"
         data: [
           {
@@ -147,7 +147,7 @@ describe "chLikeBBSAdapter", ->
 
       expect(@chLikeBBSAdapter.parseDat(url, dat)).toEqual
         url: url,
-        date: null
+        date: 1234567890 * 1000
         title: "***を追跡する #dummy"
         data: [
           {
