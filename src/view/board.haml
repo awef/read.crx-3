@@ -6,7 +6,9 @@
     %thead
       %th タイトル
       %th レス数
+      %th 作成日時
     %tbody
       %tr(data-ng-repeat="boardEntry in boardEntries.data" data-ng-click="move(boardEntry.url)")
         %td {{boardEntry.title}}
         %td {{boardEntry.resCount}}
+        %td {{dateToString(boardEntry.date)}}
