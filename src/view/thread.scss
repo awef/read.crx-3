@@ -1,5 +1,10 @@
 .thread {
+  counter-reset: res-number;
   > article {
+    counter-increment: res-number;
+    &::before {
+      content: counter(res-number)": ";
+    }
     margin: 0 0 1em 0;
   }
 }
