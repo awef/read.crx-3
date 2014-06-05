@@ -1,3 +1,10 @@
 @import "view/index.scss";
 @import "view/thread.scss";
 
+a {
+  word-break: break-all;
+}
+
+th {
+  white-space: nowrap;
+}
