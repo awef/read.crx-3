@@ -1,8 +1,12 @@
 describe "App.Adapter.BBSMenu", ->
   "use strict"
 
-  beforeEach ->
+  beforeEach () ->
     module "BBSMenuAdapter"
+
+    inject (bbsMenuAdapter) =>
+      @bbsMenuAdapter = bbsMenuAdapter
+      return
     return
 
   describe ".parse", ->
@@ -45,6 +49,32 @@ describe "App.Adapter.BBSMenu", ->
       result = App.Adapter.BBSMenu.BBSMenuAdapter.parse("")
 
       expect(result).toBeNull()
+      return
+    return
+
+  describe ".getTitle", ->
+    beforeEach ->
+      inject ($rootScope, $q, cachedHTTP) =>
+        spyOn(cachedHTTP, "get").and.callFake =>
+          setTimeout => $rootScope.$apply(); return
+          $q.when @dummyData.bbsMenuHtml
+        return
+      return
+
+    it "BBSMenuから板名を取得する", (done) ->
+      @bbsMenuAdapter.getTitle("http://epg.2ch.net/tv2chwiki/").then (res) ->
+        expect(res).toBe("テレビ番組欄")
+        done()
+        return
+      return
+
+    it "BBSMenuからの板名取得に失敗した場合はrejectする", (done) ->
+      @bbsMenuAdapter.getTitle("http://epg.2ch.net/dummy/").then(
+        (->),
+        ->
+          done()
+          return
+      )
       return
     return
   return

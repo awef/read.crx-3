@@ -33,6 +33,34 @@ module App.Adapter.BBSMenu {
       return deferred.promise;
     }
 
+    getTitle (url:string, menuUrl: string = "http://menu.2ch.net/bbsmenu.html"): ng.IPromise<string> {
+      return (
+        this
+          .get(menuUrl)
+          .then((menu: App.BBSMenu) => {
+            var deferred:ng.IDeferred<String> = this.$q.defer();
+
+            if (!
+              menu.data.some((category: App.BBSCategory) => {
+                return category.data.some((board) => {
+                  if (board.url === url) {
+                    deferred.resolve(board.title);
+                    return true;
+                  }
+                  else {
+                    return false;
+                  }
+                });
+              })
+            ) {
+              deferred.reject();
+            }
+
+            return deferred.promise;
+          })
+      );
+    }
+
     isSupported(url: string): string {
       if (url === "http://menu.2ch.net/bbsmenu.html") {
         return "yes";
