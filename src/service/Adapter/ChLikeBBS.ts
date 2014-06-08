@@ -3,22 +3,22 @@
 ///<reference path="../CachedHTTP.ts" />
 
 module App.Adapter.ChLikeBBS {
-  interface URLInfo {
-    fixedURL: string;
-    isThread: boolean;
-    isBoard: boolean;
-    boardURL?: string;
+  export interface URLInfo {
+    dataUrl: string;
+    type: string; // "board" or "thread"
   }
 
   export class AdapterService implements App.AdapterService {
     $rootScope: ng.IScope;
     $q: ng.IQService;
     cachedHTTP: App.CachedHTTP.CachedHTTP;
+    bbsMenuAdapter: App.AdapterService;
 
-    constructor ($rootScope, $q, cachedHTTP) {
+    constructor ($rootScope, $q, cachedHTTP, bbsMenuAdapter) {
       this.$rootScope = $rootScope;
       this.$q = $q;
       this.cachedHTTP = cachedHTTP;
+      this.bbsMenuAdapter = bbsMenuAdapter;
     }
 
     isSupported(url: string): string {
@@ -120,44 +120,78 @@ module App.Adapter.ChLikeBBS {
       }
     }
 
-    static getDataUrl (url: string): string {
+    static getDataUrl (url: string): ChLikeBBS.URLInfo {
       var tmp;
 
       if (tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(\w+)\/(?:(\d+)\/)?$/.exec(url)) {
-        return "http://" + tmp[1] + "/" + tmp[3] + "/subject.txt"
+        return {
+          dataUrl: "http://" + tmp[1] + "/" + tmp[3] + "/subject.txt",
+          type: "board"
+        };
       }
       else {
         tmp = /^http:\/\/(\w+\.(\w+\.\w+))\/(?:test|bbs)\/read\.cgi\/(\w+)\/(\d+)\/(?:(\d+)\/)?$/.exec(url);
-        return "http://" + tmp[1] + "/" + tmp[3] + "/dat/" + tmp[4] + ".dat";
+        return {
+          dataUrl: "http://" + tmp[1] + "/" + tmp[3] + "/dat/" + tmp[4] + ".dat",
+          type: "thread"
+        };
       }
     }
 
     get(url: string): ng.IPromise<App.Entries> {
-      var dataUrl: string, deferred: ng.IDeferred<App.Entries>;
+      var urlInfo: ChLikeBBS.URLInfo,
+        remainJob: number,
+        deferred: ng.IDeferred<App.Entries>,
+        boardTitle: string,
+        entries: App.Entries,
+        hoge;
 
-      dataUrl = AdapterService.getDataUrl(url);
+      remainJob = 1;
+      urlInfo = AdapterService.getDataUrl(url);
 
       deferred = this.$q.defer();
 
-      this.cachedHTTP.get(dataUrl, 1000 * 60 * 60, "Shift_JIS").then(
-        (response) => {
-          var parseResult: App.Entries;
+      hoge = () => {
+        remainJob--;
 
-          parseResult = this.parse(url, response);
-          deferred[parseResult ? "resolve" : "reject"](parseResult);
-        },
-        function() {
-          deferred.reject(null);
+        if (remainJob === 0) {
+          if (entries) {
+            if (boardTitle) {
+              entries.title = boardTitle;
+            }
+            deferred.resolve(entries);
+          }
+          else {
+            deferred.reject();
+          }
         }
-      );
+      };
+
+      if (urlInfo.type === "board") {
+        remainJob++;
+        (<any>this.bbsMenuAdapter).getTitle(url)
+          .then((title) => {
+            boardTitle = title;
+          })
+          .finally(hoge);
+      }
+
+      this.cachedHTTP
+        .get(urlInfo.dataUrl, 1000 * 60 * 60, "Shift_JIS")
+        .then(
+          (response) => {
+            entries = this.parse(url, response);
+          }
+        )
+        .finally(hoge);
 
       return deferred.promise;
     }
   }
 
-  angular.module("ChLikeBBS", ["CachedHTTP"])
-    .factory("chLikeBBSAdapter", function ($rootScope, $q, cachedHTTP) {
-      return new AdapterService($rootScope, $q, cachedHTTP);
+  angular.module("ChLikeBBS", ["BBSMenuAdapter", "CachedHTTP"])
+    .factory("chLikeBBSAdapter", function ($rootScope, $q, cachedHTTP, bbsMenuAdapter) {
+      return new AdapterService($rootScope, $q, cachedHTTP, bbsMenuAdapter);
     });
 }
 
