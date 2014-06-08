@@ -1,5 +1,4 @@
 ///<reference path="../../lib/DefinitelyTyped/angularjs/angular.d.ts" />
-///<reference path="../../lib/DefinitelyTyped/jquery/jquery.d.ts" />
 ///<reference path="../service/Adapter/AdapterAgent.ts" />
 
 interface IndexCtrlScope extends ng.IScope {

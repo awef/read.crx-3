@@ -79,8 +79,7 @@ namespace :core do
       sh "./node_modules/.bin/bower install"
 
       {
-        "bin/lib/angularjs/angular.min.js" => "bower_components/angular/angular.min.js",
-        "bin/lib/jquery/jquery.min.js" => "bower_components/jquery/dist/jquery.min.js"
+        "bin/lib/angularjs/angular.min.js" => "bower_components/angular/angular.min.js"
       }.each do |dist, src|
         mkdir_p File.dirname(dist)
         cp src, dist
