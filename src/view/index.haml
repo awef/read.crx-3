@@ -1,10 +1,10 @@
 .index(data-ng-controller="IndexCtrl")
   %h1 view/index
   .message {{message}}
-  %ul
-    %li(data-ng-repeat="category in bbsMenu.data")
+  %ul.categories
+    %li.category(data-ng-repeat="category in bbsMenu.data")
       {{category.title}}
-      %ul
-        %li(data-ng-repeat="board in category.data")
+      %ul.boards
+        %li.board(data-ng-repeat="board in category.data")
           %a(href="" data-ng-click="move(board.url)") {{board.title}}
 
