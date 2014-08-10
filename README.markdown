@@ -1,5 +1,6 @@
 # read.crx 3
 
+[![Build Status](https://travis-ci.org/awef/read.crx-3.svg?branch=develop)](https://travis-ci.org/awef/read.crx-3)
 [![Dependency Status](https://gemnasium.com/awef/read.crx-3.svg)](https://gemnasium.com/awef/read.crx-3)
 
 ## 概要
