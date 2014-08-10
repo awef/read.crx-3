@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 2.1.2
+before_script:
+  - npm install
+  - bundle install
+script:
+  - bundle exec rake
+  - bundle exec rake test:ci
