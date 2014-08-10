@@ -93,6 +93,10 @@ namespace :test do
     sh "node_modules/.bin/karma start --single-run"
   end
 
+  task :ci do
+    sh "node_modules/.bin/karma start --single-run --browsers PhantomJS"
+  end
+
   task :watch do
     sh "node_modules/.bin/karma start"
   end

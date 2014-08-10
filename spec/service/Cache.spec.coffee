@@ -1,6 +1,10 @@
 describe "App.CacheService", ->
   "use strict"
 
+  unless 'indexedDB' in window
+    console.log 'Skipped IndexedDB Test.'
+    return
+
   generateDummyCache = do ->
     testId = Date.now()
     seed = 0
