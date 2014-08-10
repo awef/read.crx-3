@@ -1,7 +1,7 @@
 {
   "name": "read.crx-3",
   "devDependencies": {
-    "angular": "1.2.18",
-    "angular-mocks": "1.2.18"
+    "angular": "1.2.21",
+    "angular-mocks": "1.2.21"
   }
 }
