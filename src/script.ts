@@ -5,5 +5,10 @@
 ///<reference path="controller/thread.ts" />
 ///<reference path="directive/PanelContainer.ts" />
 
-angular.module("app", ["controller/index", "PanelContainer"]);
+angular.module("app", [
+  "controller/index",
+  "controller/board",
+  "controller/thread",
+  "PanelContainer"
+]);
 
