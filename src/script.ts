@@ -4,11 +4,13 @@
 ///<reference path="controller/board.ts" />
 ///<reference path="controller/thread.ts" />
 ///<reference path="directive/PanelContainer.ts" />
+///<reference path="directive/BBSMessage.ts" />
 
 angular.module("app", [
   "controller/index",
   "controller/board",
   "controller/thread",
-  "PanelContainer"
+  "PanelContainer",
+  "BBSMessage"
 ]);
 
