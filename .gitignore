@@ -1,5 +1,7 @@
 /.sass-cache
 /bin
 /bower_components
+/cordova/platforms
 /coverage
 /node_modules
+

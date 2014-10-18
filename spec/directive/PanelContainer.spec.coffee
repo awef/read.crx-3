@@ -11,7 +11,7 @@ describe "[panelcontainer]", ->
 
       for key in ["A", "B", "C"]
         @$httpBackend
-          .whenGET("/view/test#{key}.html")
+          .whenGET("view/test#{key}.html")
           .respond(
             200,
             """

@@ -88,6 +88,14 @@ namespace :core do
   end
 end
 
+namespace :android do
+  task :run do
+    cd "cordova" do
+      sh "../node_modules/.bin/cordova run android"
+    end
+  end
+end
+
 namespace :test do
   task :run do
     sh "node_modules/.bin/karma start --single-run"

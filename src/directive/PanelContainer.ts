@@ -26,25 +26,25 @@ angular
             // TODO テンプレートの判定を専用のサービスに任せる
             switch (scope.url) {
               case "view:index":
-                templateUrl = "/view/index.html";
+                templateUrl = "view/index.html";
                 break;
               case "view:testA":
-                templateUrl = "/view/testA.html";
+                templateUrl = "view/testA.html";
                 break;
               case "view:testB":
-                templateUrl = "/view/testB.html";
+                templateUrl = "view/testB.html";
                 break;
               case "view:testC":
-                templateUrl = "/view/testC.html";
+                templateUrl = "view/testC.html";
                 break;
             }
 
             if (!templateUrl) {
               if (/\/read\.cgi\//.test(scope.url)) {
-                templateUrl = "/view/thread.html";
+                templateUrl = "view/thread.html";
               }
               else {
-                templateUrl = "/view/board.html";
+                templateUrl = "view/board.html";
               }
             }
 
